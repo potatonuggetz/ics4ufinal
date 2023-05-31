@@ -10,7 +10,7 @@ abstract public class Enemy {
     //TODO: crowd control
 
     public Enemy(){
-
+        
         enemyList.add(this); 
     }
 

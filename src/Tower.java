@@ -1,5 +1,13 @@
+import java.util.*;
 
+abstract public class Tower {
+    protected String name;
+    protected double attackDamage;
+    protected double abilityPower;
 
-public class Tower {
-    
+    private static ArrayList<Tower> towerList = new ArrayList<Tower>();
+
+    public Tower(){
+
+    }
 }

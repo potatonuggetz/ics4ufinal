@@ -7,6 +7,10 @@ abstract public class Enemy {
     protected double armor;
     protected double magicResist;
     private static ArrayList<Enemy> enemyList = new ArrayList<Enemy>();
+
+    protected int posX;
+    protected int posY;
+
     //TODO: crowd control
 
     public Enemy(){

@@ -3,6 +3,9 @@
 public class Ability {
     private String name;
     private String description;
+    private double cooldown;
+    private double currentCooldown;
+
 
     public Ability(String n, String desc){
         name=n;
@@ -15,5 +18,13 @@ public class Ability {
 
     public String getDescription(){
         return description;
+    }
+
+    public double getCooldown(){
+        return cooldown;
+    }
+
+    public double getCurrentCooldown(){
+        return currentCooldown;
     }
 }

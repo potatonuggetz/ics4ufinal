@@ -1,7 +1,11 @@
+import java.awt.*;
 import java.lang.reflect.Array;
 import java.util.*;
 
 abstract public class Tower {
+    public Image image;
+    public int posX;
+    public int posY;
     protected String name;
     protected String description;
     protected double attackDamage;

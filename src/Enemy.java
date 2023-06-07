@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.awt.*;
 
 abstract public class Enemy {
     protected String name;
@@ -10,6 +11,8 @@ abstract public class Enemy {
 
     protected int posX;
     protected int posY;
+    protected int path;
+    protected Image image;
 
     //TODO: crowd control
 

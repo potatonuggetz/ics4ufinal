@@ -7,6 +7,12 @@ public class GameEngine {
     public Level level;
     public GameRenderer renderer;
 
+    int gold;
+    int health;
+
+
+    //boolean menuToggle;
+
     public GameEngine(Level level) {
         this.level = level;
     }
@@ -15,7 +21,5 @@ public class GameEngine {
         for (Enemy e : shownEnemies) {
             e.posX += e.speed;
         }
-
-        renderer.tick();
     }
 }

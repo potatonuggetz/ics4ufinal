@@ -1,13 +1,18 @@
 
 
-public class Ability {
-    private String name;
-    private String description;
+abstract class Ability {
+    protected String name;
+    protected String description;
+    protected double cooldown;
+    protected double timeLastUsed;
+    protected Tower tower;
 
-    public Ability(String n, String desc){
-        name=n;
-        description=desc;
+
+    public Ability(Tower t){
+        tower=t;
     }
+
+    abstract void use();//make sure cooldown is set to current time
 
     public String getName(){
         return name;
@@ -15,5 +20,14 @@ public class Ability {
 
     public String getDescription(){
         return description;
+    }
+
+    public double getCooldown(){
+        return cooldown;
+    }
+
+    public double getCurrentCooldown(){
+        //returns either 0 or the cooldown length remaining
+        return Math.max(0,cooldown-((System.currentTimeMillis()-timeLastUsed)/1000));
     }
 }

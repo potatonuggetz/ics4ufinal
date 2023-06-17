@@ -12,6 +12,7 @@ abstract public class Enemy {
     protected int posX;
     protected int posY;
     protected int path;
+    protected int leg;
     protected Image image;
 
     //TODO: crowd control

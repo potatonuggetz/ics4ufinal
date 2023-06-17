@@ -8,6 +8,10 @@ public class GameEngine {
     public ArrayList<Enemy> shownEnemies;
     public Level level;
 
+    public final double FPS = 60.0;
+
+    public ArrayList<Tower> availableTowers;
+
     int gold;
     int health;
 
@@ -19,21 +23,23 @@ public class GameEngine {
         this.level = level;
     }
 
-    public void tick() {
-        for (Enemy e : shownEnemies) {
-            e.posX += e.speed;
+    public void update() {
+        // move enemy
+        for (Enemy e : this.shownEnemies) {
+            e.posX += (e.speed / FPS) * this.level.paths.get(e.path).get(e.leg).getDirection().first;
+            e.posY += (e.speed / FPS) * this.level.paths.get(e.path).get(e.leg).getDirection().second;
+
         }
+
+        // towers attack
+
+
     }
 
     public void draw(JPanel panel, Graphics g) {
         g.drawImage(this.level.background, 0, 0, null);
 
-        for (Enemy e : this.shownEnemies) {
-            g.drawImage(e.image, e.posX-10, e.posY-10, null);
-        }
-        for (Tower t : this.placedTowers) {
-            g.drawImage(t.image, t.posX, t.posY, null);
-        }
+
     }
 
     // menu at bottom, gold, health, background
@@ -43,7 +49,12 @@ public class GameEngine {
 
     // towers, enemies, "bullets"
     public void drawGameLogic(Graphics g) {
-
+        for (Enemy e : this.shownEnemies) {
+            g.drawImage(e.image, e.posX-10, e.posY-10, null);
+        }
+        for (Tower t : this.placedTowers) {
+            g.drawImage(t.image, t.posX, t.posY, null);
+        }
     }
 
     // tower highlight, tower info, ability buttons

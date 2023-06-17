@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 public class Level {
     public Queue<Enemy> enemies;
-    public ArrayList<ArrayList<Pair<Integer, Integer>>> paths;
+    public ArrayList<ArrayList<Line>> paths;
 
 
     public Image background;

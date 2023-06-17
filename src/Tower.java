@@ -51,8 +51,8 @@ abstract public class Tower {
         return attackSpeed[level];
     }
 
-    public double getCurrentAttackCooldown(){
-        return Math.max(0,(GameEngine.getFPS()/attackSpeed[level])-(GameEngine.getCurrentFrame()-timeLastAttacked));
+    public double getCurrentAttackCooldown(GameEngine g){
+        return Math.max(0,(g.getFPS()/attackSpeed[level])-(g.getCurrentFrame()-timeLastAttacked));
     }
 
     public int getLevel(){

@@ -28,6 +28,6 @@ abstract class Ability {
 
     public double getCurrentCooldown(){
         //returns either 0 or the cooldown length remaining
-        return Math.max(0,cooldown-((System.currentTimeMillis()-timeLastUsed)/1000));
+        return Math.max(0,cooldown[tower.getLevel()]-((System.currentTimeMillis()-timeLastUsed)/1000));
     }
 }

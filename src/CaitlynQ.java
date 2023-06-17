@@ -5,8 +5,8 @@ public class CaitlynQ extends Ability{
         description="Caitlyn fires a piercing shot in the target direction that deals physical damage to all enemies it passes through";
         cooldown=new double[]{1000,10,9,8,7,6};
     }
-    public void use(){
-        timeLastUsed=GameEngine.getCurrentFrame();
-        
+    public void use(GameEngine g){
+        timeLastUsed=g.getCurrentFrame();
+
     }
 }

@@ -16,10 +16,11 @@ abstract public class Tower {
     protected ArrayList<Ability> towerAbilities = new ArrayList<Ability>();
     private static ArrayList<Tower> towerList = new ArrayList<Tower>();
 
-    public Tower(int x,int y){
+    public Tower(int x,int y,GameEngine g){
         posX=x;
         posY=y;
         towerList.add(this);
+        g.getPlacedTowers().add(this);
     }
 
     public String getName(){

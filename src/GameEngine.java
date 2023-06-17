@@ -4,12 +4,12 @@ import java.util.ArrayList;
 
 public class GameEngine {
 
-    public ArrayList<Tower> placedTowers;
+    private  ArrayList<Tower> placedTowers;
     public ArrayList<Enemy> shownEnemies;
     public Level level;
 
-    private static final double FPS = 60.0;
-    private static int currentFrame=0;
+    private final double FPS = 60.0;
+    private int currentFrame=0;
 
     public ArrayList<Tower> availableTowers;
 
@@ -65,11 +65,15 @@ public class GameEngine {
     }
 
     //getters setters
-    public static int getCurrentFrame(){
+    public int getCurrentFrame(){
         return currentFrame;
     }
 
-    public static double getFPS(){
+    public double getFPS(){
         return FPS;
+    }
+
+    public ArrayList<Tower> getPlacedTowers(){
+        return placedTowers;
     }
 }

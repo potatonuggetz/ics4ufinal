@@ -3,11 +3,11 @@ import java.util.*;
 abstract public class Tower {
     protected String name;
     protected String description;
-    protected double attackDamage;
-    protected double abilityPower;
-    protected double attackSpeed; //attacks per second
+    protected double[] attackDamage;
+    protected double[] abilityPower;
+    protected double[] attackSpeed; //attacks per second
     protected double timeLastAttacked; //millisecond when last attacked
-    protected int level; //level of the tower, increases with respect to time
+    protected int level; //level of the tower, increases with respect to time, maxes at 5
     protected int xp; //xp, used to calculate level
     protected ArrayList<Ability> towerAbilities = new ArrayList<Ability>();
     private static ArrayList<Tower> towerList = new ArrayList<Tower>();
@@ -26,11 +26,11 @@ abstract public class Tower {
     }
 
     public double getAttackDamage(){
-        return attackDamage;
+        return attackDamage[level];
     }
 
     public double getAbilityPower(){
-        return abilityPower;
+        return abilityPower[level];
     }
 
     public ArrayList<Ability> getAbilities(){
@@ -42,7 +42,7 @@ abstract public class Tower {
     }
 
     public double getAttackSpeed(){
-        return attackSpeed;
+        return attackSpeed[level];
     }
 
     public double getCurrentAttackCooldown(){

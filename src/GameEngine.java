@@ -6,14 +6,15 @@ import java.util.ListIterator;
 
 public class GameEngine {
 
-    public ArrayList<Tower> placedTowers;
+    private ArrayList<Tower> placedTowers;
     public ArrayList<Enemy> shownEnemies;
     public ArrayList<Enemy> dyingEnemies;
     public Level level;
 
     public static int frame;
 
-    public final double FPS = 60.0;
+    private final double FPS = 60.0;
+    private int currentFrame=0;
 
     public ArrayList<Tower> availableTowers;
 
@@ -34,6 +35,7 @@ public class GameEngine {
     }
 
     public void update() {
+        currentFrame++;
         // move enemy
         ListIterator<Enemy> i = shownEnemies.listIterator();
         while(i.hasNext()) {
@@ -110,5 +112,18 @@ public class GameEngine {
                 i.remove();
             }
         }
+    }
+
+    //getters setters
+    public int getCurrentFrame(){
+        return currentFrame;
+    }
+
+    public double getFPS(){
+        return FPS;
+    }
+
+    public ArrayList<Tower> getPlacedTowers(){
+        return placedTowers;
     }
 }

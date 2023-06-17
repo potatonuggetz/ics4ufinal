@@ -3,8 +3,8 @@
 abstract class Ability {
     protected String name;
     protected String description;
-    protected double[] cooldown;
-    protected double timeLastUsed;
+    protected double[] cooldown; //measured in seconds
+    protected double timeLastUsed; //frame that ability was last used
     protected Tower tower;
 
 
@@ -26,8 +26,8 @@ abstract class Ability {
         return cooldown[tower.getLevel()];
     }
 
-    public double getCurrentCooldown(){
-        //returns either 0 or the cooldown length remaining
-        return Math.max(0,cooldown[0]-((System.currentTimeMillis()-timeLastUsed)/1000));
+    public double getCurrentCooldown(GameEngine g){
+        //returns either 0 or the cooldown length remaining in frames
+        return Math.max(0,(cooldown[tower.getLevel()]*g.getFPS())-(g.getCurrentFrame()-timeLastUsed));
     }
 }

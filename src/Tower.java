@@ -10,16 +10,17 @@ abstract public class Tower {
     protected double[] attackDamage;
     protected double[] abilityPower;
     protected double[] attackSpeed; //attacks per second
-    protected double timeLastAttacked; //millisecond when last attacked
+    protected double timeLastAttacked; //frame when last attacked
     protected int level; //level of the tower, increases with respect to time, maxes at 5
     protected int xp; //xp, used to calculate level
     protected ArrayList<Ability> towerAbilities = new ArrayList<Ability>();
     private static ArrayList<Tower> towerList = new ArrayList<Tower>();
 
-    public Tower(int x,int y){
+    public Tower(int x,int y,GameEngine g){
         posX=x;
         posY=y;
         towerList.add(this);
+        g.getPlacedTowers().add(this);
     }
 
     public String getName(){
@@ -51,7 +52,7 @@ abstract public class Tower {
     }
 
     public double getCurrentAttackCooldown(){
-        return Math.max(0,(1/attackSpeed[level])-((System.currentTimeMillis()-timeLastAttacked)/1000));
+        return Math.max(0,(GameEngine.getFPS()/attackSpeed[level])-(GameEngine.getCurrentFrame()-timeLastAttacked));
     }
 
     public int getLevel(){
@@ -60,5 +61,13 @@ abstract public class Tower {
 
     public int getXP(){
         return xp;
+    }
+
+    public int getPosX(){
+        return posX;
+    }
+
+    public int getPosY(){
+        return posY;
     }
 }

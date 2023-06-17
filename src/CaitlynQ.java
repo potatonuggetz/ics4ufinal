@@ -6,6 +6,7 @@ public class CaitlynQ extends Ability{
         cooldown=new double[]{1000,10,9,8,7,6};
     }
     public void use(){
-        timeLastUsed=System.currentTimeMillis();
+        timeLastUsed=GameEngine.getCurrentFrame();
+        
     }
 }

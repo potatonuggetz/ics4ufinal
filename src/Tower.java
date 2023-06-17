@@ -61,4 +61,12 @@ abstract public class Tower {
     public int getXP(){
         return xp;
     }
+
+    public int getPosX(){
+        return posX;
+    }
+
+    public int getPosY(){
+        return posY;
+    }
 }

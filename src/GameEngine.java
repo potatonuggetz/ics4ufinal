@@ -11,10 +11,8 @@ public class GameEngine {
     public ArrayList<Enemy> dyingEnemies;
     public Level level;
 
-    public static int frame;
-
-    private final double FPS = 60.0;
-    private int currentFrame=0;
+    private static final double FPS = 60.0;
+    private static int currentFrame = 0;
 
     public ArrayList<Tower> availableTowers;
 
@@ -115,11 +113,11 @@ public class GameEngine {
     }
 
     //getters setters
-    public int getCurrentFrame(){
+    public static int getCurrentFrame(){
         return currentFrame;
     }
 
-    public double getFPS(){
+    public static double getFPS(){
         return FPS;
     }
 

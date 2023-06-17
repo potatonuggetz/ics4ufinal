@@ -46,7 +46,7 @@ abstract public class Tower {
     }
 
     public double getCurrentAttackCooldown(){
-        return Math.max(0,(1/attackSpeed)-((System.currentTimeMillis()-timeLastAttacked)/1000));
+        return Math.max(0,(1/attackSpeed[level])-((System.currentTimeMillis()-timeLastAttacked)/1000));
     }
 
     public int getLevel(){

@@ -3,17 +3,26 @@ import java.awt.*;
 
 abstract public class Enemy {
     protected String name;
-    protected double speed;
     protected double health;
     protected double armor;
     protected double magicResist;
     private static ArrayList<Enemy> enemyList = new ArrayList<Enemy>();
 
+    // visual
     protected int posX;
     protected int posY;
+    protected int sizeX;
+    protected int sizeY;
+    protected Image image;
+    protected Image[] deathAnimations;
+    protected int deathAnimationCount;
+
+    // movement
+    protected double absPosX;
+    protected double absPosY;
+    protected double speed;
     protected int path;
     protected int leg;
-    protected Image image;
 
     //TODO: crowd control
 

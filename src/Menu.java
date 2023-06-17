@@ -22,6 +22,8 @@ public class Menu extends JPanel implements MouseListener, KeyListener, Runnable
         addKeyListener(this);
         addMouseWheelListener(this);
         frame.addWindowListener(this);
+
+        new Thread(this).start();
     }
 
     public void startGame() {
@@ -59,7 +61,8 @@ public class Menu extends JPanel implements MouseListener, KeyListener, Runnable
     public void drawGame(Graphics g) {
         Graphics2D g2d = (Graphics2D) g;
 
-
+        engine.update();
+        engine.draw(this, g);
     }
 
     public void drawGameResults(Graphics g) {
@@ -102,8 +105,16 @@ public class Menu extends JPanel implements MouseListener, KeyListener, Runnable
 
     }
 
+    @Override
     public void run() {
+        while (true) {
+            repaint();
+            try {
+                Thread.sleep(16);
+            } catch (InterruptedException e) {
 
+            }
+        }
     }
 
     public void keyTyped(KeyEvent e) {

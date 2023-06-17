@@ -3,7 +3,7 @@
 abstract class Ability {
     protected String name;
     protected String description;
-    protected double cooldown;
+    protected double[] cooldown;
     protected double timeLastUsed;
     protected Tower tower;
 
@@ -23,7 +23,7 @@ abstract class Ability {
     }
 
     public double getCooldown(){
-        return cooldown;
+        return cooldown[tower.getLevel()];
     }
 
     public double getCurrentCooldown(){

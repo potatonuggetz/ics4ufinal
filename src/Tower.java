@@ -1,6 +1,10 @@
 import java.util.*;
+import java.awt.*;
 
 abstract public class Tower {
+    protected Image image;
+    protected int posX;
+    protected int posY;
     protected String name;
     protected String description;
     protected double[] attackDamage;
@@ -12,8 +16,9 @@ abstract public class Tower {
     protected ArrayList<Ability> towerAbilities = new ArrayList<Ability>();
     private static ArrayList<Tower> towerList = new ArrayList<Tower>();
 
-    public Tower(){
-
+    public Tower(int x,int y){
+        posX=x;
+        posY=y;
         towerList.add(this);
     }
 

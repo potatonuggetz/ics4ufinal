@@ -8,7 +8,8 @@ public class GameEngine {
     public ArrayList<Enemy> shownEnemies;
     public Level level;
 
-    public final double FPS = 60.0;
+    private static final double FPS = 60.0;
+    private static int currentFrame=0;
 
     public ArrayList<Tower> availableTowers;
 
@@ -24,6 +25,7 @@ public class GameEngine {
     }
 
     public void update() {
+        currentFrame++;
         // move enemy
         for (Enemy e : this.shownEnemies) {
             e.posX += (e.speed / FPS) * this.level.paths.get(e.path).get(e.leg).getDirection().first;
@@ -60,5 +62,14 @@ public class GameEngine {
     // tower highlight, tower info, ability buttons
     public void drawSelectedTower(Graphics g) {
 
+    }
+
+    //getters setters
+    public static int getCurrentFrame(){
+        return currentFrame;
+    }
+
+    public static double getFPS(){
+        return FPS;
     }
 }

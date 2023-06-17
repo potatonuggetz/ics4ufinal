@@ -1,20 +1,24 @@
 import java.awt.*;
-import java.lang.reflect.Array;
 import java.util.*;
 
 abstract public class Tower {
-    public Image image;
-    public int posX;
-    public int posY;
+    protected Image image;
+    protected int posX;
+    protected int posY;
     protected String name;
     protected String description;
-    protected double attackDamage;
-    protected double abilityPower;
+    protected double[] attackDamage;
+    protected double[] abilityPower;
+    protected double[] attackSpeed; //attacks per second
+    protected double timeLastAttacked; //millisecond when last attacked
+    protected int level; //level of the tower, increases with respect to time, maxes at 5
+    protected int xp; //xp, used to calculate level
     protected ArrayList<Ability> towerAbilities = new ArrayList<Ability>();
     private static ArrayList<Tower> towerList = new ArrayList<Tower>();
 
-    public Tower(){
-
+    public Tower(int x,int y){
+        posX=x;
+        posY=y;
         towerList.add(this);
     }
 
@@ -27,11 +31,11 @@ abstract public class Tower {
     }
 
     public double getAttackDamage(){
-        return attackDamage;
+        return attackDamage[level];
     }
 
     public double getAbilityPower(){
-        return abilityPower;
+        return abilityPower[level];
     }
 
     public ArrayList<Ability> getAbilities(){
@@ -40,5 +44,21 @@ abstract public class Tower {
 
     public ArrayList<Tower> getTowers(){
         return towerList;
+    }
+
+    public double getAttackSpeed(){
+        return attackSpeed[level];
+    }
+
+    public double getCurrentAttackCooldown(){
+        return Math.max(0,(1/attackSpeed[level])-((System.currentTimeMillis()-timeLastAttacked)/1000));
+    }
+
+    public int getLevel(){
+        return level;
+    }
+
+    public int getXP(){
+        return xp;
     }
 }

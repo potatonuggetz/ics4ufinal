@@ -1,4 +1,4 @@
-
+import java.awt.*;
 
 abstract class Ability {
     protected String name;
@@ -6,6 +6,12 @@ abstract class Ability {
     protected double[] cooldown; //measured in seconds
     protected double timeLastUsed; //frame that ability was last used
     protected Tower tower;
+
+    protected int range;
+
+    protected int projSizeX;
+    protected int projSizeY;
+    protected Image projectile;
 
 
     public Ability(Tower t){

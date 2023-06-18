@@ -1,8 +1,6 @@
 import javax.swing.*;
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.ListIterator;
+import java.util.*;
 
 public class GameEngine {
 
@@ -67,12 +65,30 @@ public class GameEngine {
 
                 e.posX = (int) Math.round(e.absPosX);
                 e.posY = (int) Math.round(e.absPosY);
+
+                int distance1=0;
+                for(int j=e.leg+1;j<level.paths.get(e.path).size();j++){
+                    distance1+=level.paths.get(e.path).get(j).getDistance();
+                }
+                distance1+=new Line(new Pair<>(e.posX,e.posY),level.paths.get(e.path).get(e.leg).getEnd()).getDistance();
+                e.distanceFromEnd=distance1;
+
             }
         }
 
         // towers attack
         for (Tower t : this.placedTowers) {
-            
+            if(t.getCurrentAttackCooldown()==0){
+                if(t.targeting==Tower.TARGETING_FIRST) Collections.sort(shownEnemies);
+                else if(t.targeting==Tower.TARGETING_LAST) Collections.sort(shownEnemies,new SortEnemyLast());
+                else if(t.targeting==Tower.TARGETING_STRONG) Collections.sort(shownEnemies,new SortEnemyStrong());
+                for(Enemy e:shownEnemies){
+                    Line x=new Line(new Pair<>(t.posX,t.posY),new Pair<>(e.posX,e.posY));
+                    if(x.getDistance()<=t.range){
+                        activeProjectiles.add(new Projectile(t, e));
+                    }
+                }
+            }
         }
 
         // projectile movement & collision detection
@@ -86,6 +102,22 @@ public class GameEngine {
                     if (rectangleCollision(p.getAbsPosX(), p.getAbsPosY(), p.getProjSizeX(), p.getProjSizeY(), p.target.absPosX, p.target.absPosY, p.target.sizeX, p.target.sizeY)) {
                         p.target.health -= p.tower.attackDamage[p.tower.level] - p.target.armor;
                         i.remove();
+                    }
+                }else{
+                    ArrayList<Enemy> hittableEnemies = new ArrayList<>(shownEnemies);
+                    ListIterator<Enemy> j=hittableEnemies.listIterator();
+                    while(j.hasNext()){
+                        Enemy e=j.next();
+                        if (rectangleCollision(p.getAbsPosX(), p.getAbsPosY(), p.getProjSizeX(), p.getProjSizeY(), e.absPosX, e.absPosY, e.sizeX, e.sizeY)) {
+                            if(p.magicDamage){
+                                e.health-=(((p.tower.attackDamage[p.tower.level]*p.scalingAD)+(p.tower.abilityPower[p.tower.level]*p.scalingAP))*(e.magicResist/100));
+                            } else{
+                                e.health-=(((p.tower.attackDamage[p.tower.level]*p.scalingAD)+(p.tower.abilityPower[p.tower.level]*p.scalingAP))-(e.armor));
+                            }
+                            j.remove();
+                            p.pierce--;
+                            if(p.pierce<=0) i.remove();
+                        }
                     }
                 }
             }

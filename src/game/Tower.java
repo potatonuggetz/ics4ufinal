@@ -10,6 +10,9 @@ abstract public class Tower {
     protected int xp; //xp, used to calculate level
 
     // attack
+    protected double currentAttackDamage;
+    protected double currentAbilityPower;
+    protected double currentAttackSpeed;
     protected double[] attackDamage;
     protected double[] attackSpeed; //attacks per second
     protected double projectileSpeed;
@@ -71,7 +74,7 @@ abstract public class Tower {
     }
 
     public double getCurrentAttackCooldown(){
-        return Math.max(0,(GameEngine.getFPS()/attackSpeed[level])-(GameEngine.getCurrentFrame()-timeLastAttacked));
+        return Math.max(0,(GameEngine.getFPS()/currentAttackSpeed)-(GameEngine.getCurrentFrame()-timeLastAttacked));
     }
 
     public int getLevel(){

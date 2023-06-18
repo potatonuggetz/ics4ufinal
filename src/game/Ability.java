@@ -24,7 +24,11 @@ abstract public class Ability {
     protected double duration;
 
     //enemy-targeted event (only slow)
-    protected double slowFactor;
+    protected double slowFactor=1;
+
+    //tower-targeted event
+    protected double attackDamageFactor=1;
+    protected double attackSpeedFactor=1;
 
 
     public Ability(Tower t){

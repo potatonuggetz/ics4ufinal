@@ -112,6 +112,10 @@ public class GameEngine {
                 TemporaryEvent e=eventsToRemove.get(currentFrame);
                 if(e.type==TemporaryEvent.TARGET_ENEMY){
                     e.targetEnemy.currentSpeed/=e.ability.slowFactor;    
+                }else if(e.type==TemporaryEvent.TARGET_TOWER){
+                    e.targetTower.currentAttackDamage/=e.ability.attackDamageFactor;
+                    e.targetTower.currentAbilityPower/=e.ability.abilityPowerFactor;
+                    e.targetTower.currentAttackSpeed/=e.ability.attackSpeedFactor;
                 }
                 eventsToRemove.remove(currentFrame);
             }
@@ -131,7 +135,17 @@ public class GameEngine {
                     }
                     eventsToRemove.put(currentFrame+(int)(e.ability.duration*FPS)+j,e);
                 }
-
+                else if(e.type==TemporaryEvent.TARGET_TOWER){
+                    e.targetTower.currentAttackDamage*=e.ability.attackDamageFactor;
+                    e.targetTower.currentAbilityPower*=e.ability.abilityPowerFactor;
+                    e.targetTower.currentAttackSpeed*=e.ability.attackSpeedFactor;
+                    //if there are somehow 2 buffs expiring on the same frame then just offset it by 1
+                    int j=0;
+                    while(eventsToRemove.containsKey(currentFrame+(int)(e.ability.duration*FPS)+j)){
+                        j++;
+                    }
+                    eventsToRemove.put(currentFrame+(int)(e.ability.duration*FPS)+j,e);
+                }
                 i.remove();
             }
         }
@@ -213,7 +227,7 @@ public class GameEngine {
 
                 if (p.isAuto()) {
                     if (rectangleCollision(p.getAbsPosX(), p.getAbsPosY(), p.getProjSizeX(), p.getProjSizeY(), p.target.absPosX, p.target.absPosY, p.target.sizeX, p.target.sizeY)) {
-                        p.target.health -= p.tower.attackDamage[p.tower.level] - p.target.armor;
+                        p.target.health -= p.tower.currentAttackDamage - p.target.armor;
                         i.remove();
                     }
                 }else{
@@ -223,9 +237,9 @@ public class GameEngine {
                         Enemy e=j.next();
                         if (rectangleCollision(p.getAbsPosX(), p.getAbsPosY(), p.getProjSizeX(), p.getProjSizeY(), e.absPosX, e.absPosY, e.sizeX, e.sizeY)) {
                             if(p.ability.magicDamage){
-                                e.health-=(((p.tower.attackDamage[p.tower.level]*p.ability.scalingAD)+(p.tower.abilityPower[p.tower.level]*p.ability.scalingAP))*(e.magicResist/100));
+                                e.health-=(((p.tower.currentAttackDamage*p.ability.scalingAD)+(p.tower.currentAbilityPower*p.ability.scalingAP))*(e.magicResist/100));
                             } else{
-                                e.health-=(((p.tower.attackDamage[p.tower.level]*p.ability.scalingAD)+(p.tower.abilityPower[p.tower.level]*p.ability.scalingAP))-(e.armor));
+                                e.health-=(((p.tower.currentAttackDamage*p.ability.scalingAD)+(p.tower.currentAbilityPower*p.ability.scalingAP))-(e.armor));
                             }
                             j.remove();
                             p.ability.pierce--;

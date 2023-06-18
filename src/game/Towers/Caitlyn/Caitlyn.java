@@ -17,7 +17,7 @@ public class Caitlyn extends Tower{
         projectileSpeed=75;
         range=200;
         try {
-            this.image = ImageIO.read(new File("caitlyn.png"));
+            this.image = ImageIO.read(new File("img/tower/caitlyn.png"));
         } catch (IOException e) {
             e.printStackTrace();
         }

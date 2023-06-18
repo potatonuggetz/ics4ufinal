@@ -54,6 +54,8 @@ public class GameEngine {
         dyingEnemies = new ArrayList<>();
         availableTowers = new ArrayList<>();
         activeProjectiles = new ArrayList<>();
+        tempEvents=new ArrayList<>();
+        eventsToRemove=new HashMap<>();
         nextWave = new LinkedList<>();
 
         // font for gold, health, wave display

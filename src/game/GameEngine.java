@@ -37,6 +37,7 @@ public class GameEngine {
 
     // images
     Image towerframe, towerframeSelected;
+    Image ashe,caitlyn,ezreal,lulu,veigar,vex;
     Image goldDisplay, hpDisplay, waveStart, waveProgress, waveStartHover;
     Image waveIcon, heartIcon, goldIcon;
     Image[] deathAnimations;
@@ -63,16 +64,23 @@ public class GameEngine {
 
         // add images
         try {
-           towerframe = ImageIO.read(new File("img/ui/game_menu_tower_frame.png"));
-           towerframeSelected = ImageIO.read(new File("img/ui/game_menu_tower_selected.png"));
-           goldDisplay = ImageIO.read(new File("img/ui/game_menu_golddisplay.png"));
-           hpDisplay = ImageIO.read(new File("img/ui/game_menu_hpdisplay.png"));
-           waveStart = ImageIO.read(new File("img/ui/game_menu_wavestart.png"));
-           waveStartHover = ImageIO.read(new File("img/ui/game_menu_wavestarthover.png"));
-           waveProgress = ImageIO.read(new File("img/ui/game_menu_waveprogress.png"));
-           waveIcon = ImageIO.read(new File("img/ui/game_menu_waveicon.png"));
-           heartIcon = ImageIO.read(new File("img/ui/game_menu_hearticon.png"));
-           goldIcon = ImageIO.read(new File("img/ui/game_menu_goldicon.png"));
+            towerframe = ImageIO.read(new File("img/ui/game_menu_tower_frame.png"));
+            towerframeSelected = ImageIO.read(new File("img/ui/game_menu_tower_selected.png"));
+            goldDisplay = ImageIO.read(new File("img/ui/game_menu_golddisplay.png"));
+            hpDisplay = ImageIO.read(new File("img/ui/game_menu_hpdisplay.png"));
+            waveStart = ImageIO.read(new File("img/ui/game_menu_wavestart.png"));
+            waveStartHover = ImageIO.read(new File("img/ui/game_menu_wavestarthover.png"));
+            waveProgress = ImageIO.read(new File("img/ui/game_menu_waveprogress.png"));
+            waveIcon = ImageIO.read(new File("img/ui/game_menu_waveicon.png"));
+            heartIcon = ImageIO.read(new File("img/ui/game_menu_hearticon.png"));
+            goldIcon = ImageIO.read(new File("img/ui/game_menu_goldicon.png"));
+            ashe = ImageIO.read(new File("img/tower/ashe.png"));
+            caitlyn = ImageIO.read(new File("img/tower/caitlyn.png"));
+            ezreal = ImageIO.read(new File("img/tower/ezreal.png"));
+            lulu = ImageIO.read(new File("img/tower/lulu.png"));
+            veigar = ImageIO.read(new File("img/tower/veigar.png"));
+            vex = ImageIO.read(new File("img/tower/vex.png"));
+           
 
            deathAnimations = new Image[20];
            for (int i = 0; i < 20; i++) {
@@ -333,11 +341,17 @@ public class GameEngine {
         g.drawString(String.valueOf(wave), (342 + ((170 - (10+waveIcon.getWidth(null)+metrics.stringWidth(String.valueOf(wave)))) / 2)) + waveIcon.getWidth(null)+5, 644 + metrics.getAscent());
 
         menu.drawButton(g2d, towerframe, towerframeSelected, 256*2, 600, 128, 120);
+        g.drawImage(ashe, 256*2, 600, 128, 120,null);
         menu.drawButton(g2d, towerframe, towerframeSelected, 256*2+128, 600, 128, 120);
+        g.drawImage(caitlyn, 256*2+128, 600, 128, 120,null);
         menu.drawButton(g2d, towerframe, towerframeSelected, 256*3, 600, 128, 120);
+        g.drawImage(ezreal, 256*3, 600, 128, 120,null);
         menu.drawButton(g2d, towerframe, towerframeSelected, 256*3+128, 600, 128, 120);
+        g.drawImage(lulu, 256*3+128, 600, 128, 120,null);
         menu.drawButton(g2d, towerframe, towerframeSelected, 256*4, 600, 128, 120);
+        g.drawImage(veigar, 256*4, 600, 128, 120,null);
         menu.drawButton(g2d, towerframe, towerframeSelected, 256*4+128, 600, 128, 120);
+        g.drawImage(vex, 256*4+128, 600, 128, 120,null);
     }
 
     /*

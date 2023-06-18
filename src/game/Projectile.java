@@ -21,6 +21,9 @@ public class Projectile {
     private double absPosX;
     private double absPosY;
 
+    //on-hit effects
+    protected boolean hasSlow;
+
     //skillshots
     public Projectile(Tower tower, Ability ability, Pair<Integer,Integer> target) {
         auto = false;

@@ -6,8 +6,8 @@ public class EzrealQ extends Ability{
         name="Mystic Shot";
         description="Ezreal fires a bolt of energy in the target direction that deals physical damage to the first enemy hit.";
         cooldown=new double[]{1000,4,3.5,3,2,1};
-        projSizeX=35;
-        projSizeY=35;
+        projSizeX=17;
+        projSizeY=17;
         range=200;
         magicDamage=false;
         scalingAD=3;

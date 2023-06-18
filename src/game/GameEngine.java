@@ -1,6 +1,9 @@
 package game;
 
 import javax.imageio.ImageIO;
+
+import game.Towers.Ashe.AsheP;
+
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.io.File;
@@ -13,6 +16,8 @@ public class GameEngine {
     private ArrayList<Enemy> shownEnemies;
     private ArrayList<Enemy> dyingEnemies;
     private ArrayList<Projectile> activeProjectiles;
+    private ArrayList<TemporaryEvent> tempEvents;
+    private HashMap<Integer,TemporaryEvent> eventsToRemove;
     public ArrayList<Tower> availableTowers;
     Tower selectedTower;
     private Level level;
@@ -104,6 +109,50 @@ public class GameEngine {
             return;
         }
 
+        //remove all buffs to be removed
+        {
+            if(eventsToRemove.containsKey(currentFrame)){
+                TemporaryEvent e=eventsToRemove.get(currentFrame);
+                if(e.type==TemporaryEvent.TARGET_ENEMY){
+                    e.targetEnemy.currentSpeed/=e.ability.slowFactor;    
+                }else if(e.type==TemporaryEvent.TARGET_TOWER){
+                    e.targetTower.currentAttackDamage/=e.ability.attackDamageFactor;
+                    e.targetTower.currentAbilityPower/=e.ability.abilityPowerFactor;
+                    e.targetTower.currentAttackSpeed/=e.ability.attackSpeedFactor;
+                }
+                eventsToRemove.remove(currentFrame);
+            }
+        }
+
+        //process all buffs
+        {
+            ListIterator<TemporaryEvent> i=tempEvents.listIterator();
+            while(i.hasNext()){
+                TemporaryEvent e=i.next();
+                if(e.type==TemporaryEvent.TARGET_ENEMY){
+                    e.targetEnemy.currentSpeed*=e.ability.slowFactor;
+                    //if there are somehow 2 buffs expiring on the same frame then just offset it by 1
+                    int j=0;
+                    while(eventsToRemove.containsKey(currentFrame+(int)(e.ability.duration*FPS)+j)){
+                        j++;
+                    }
+                    eventsToRemove.put(currentFrame+(int)(e.ability.duration*FPS)+j,e);
+                }
+                else if(e.type==TemporaryEvent.TARGET_TOWER){
+                    e.targetTower.currentAttackDamage*=e.ability.attackDamageFactor;
+                    e.targetTower.currentAbilityPower*=e.ability.abilityPowerFactor;
+                    e.targetTower.currentAttackSpeed*=e.ability.attackSpeedFactor;
+                    //if there are somehow 2 buffs expiring on the same frame then just offset it by 1
+                    int j=0;
+                    while(eventsToRemove.containsKey(currentFrame+(int)(e.ability.duration*FPS)+j)){
+                        j++;
+                    }
+                    eventsToRemove.put(currentFrame+(int)(e.ability.duration*FPS)+j,e);
+                }
+                i.remove();
+            }
+        }
+
         // add next enemy
         if (System.currentTimeMillis() >= nextEnemyTime && nextEnemyTime != -1) {
             shownEnemies.add(nextWave.remove());
@@ -122,8 +171,8 @@ public class GameEngine {
                 Line leg;
                 leg = this.level.paths.get(e.path).get(e.leg);
 
-                e.absPosX += (e.speed * (lag * 0.001)) * leg.getDirection().first;
-                e.absPosY += (e.speed * (lag * 0.001)) * leg.getDirection().second;
+                e.absPosX += (e.currentSpeed * (lag * 0.001)) * leg.getDirection().first;
+                e.absPosY += (e.currentSpeed * (lag * 0.001)) * leg.getDirection().second;
 
                 if ((e.absPosX * leg.getSigns().first >= leg.getEnd().first * leg.getSigns().first) && (e.absPosY * leg.getSigns().second >= leg.getEnd().second * leg.getSigns().second)) {
                     e.leg++;
@@ -164,7 +213,9 @@ public class GameEngine {
                 for(Enemy e:shownEnemies){
                     Line x=new Line(new Pair<>(t.posX,t.posY),new Pair<>(e.posX,e.posY));
                     if(x.getDistance()<=t.range){
-                        activeProjectiles.add(new Projectile(t, e));
+                        Projectile p=new Projectile(t, e);
+                        if(t.name.equals("Ashe")) p.hasSlow=true;
+                        activeProjectiles.add(p);
                         t.timeLastAttacked=currentFrame;
                         break;
                     }
@@ -181,7 +232,11 @@ public class GameEngine {
 
                 if (p.isAuto()) {
                     if (rectangleCollision(p.getAbsPosX(), p.getAbsPosY(), p.getProjSizeX(), p.getProjSizeY(), p.target.absPosX, p.target.absPosY, p.target.sizeX, p.target.sizeY)) {
-                        p.target.health -= p.tower.attackDamage[p.tower.level] - p.target.armor;
+                        p.target.health -= p.tower.currentAttackDamage - p.target.armor;
+                        if(p.hasSlow){
+                            //only ashe has slow passive
+                            tempEvents.add(new TemporaryEvent(p.target,new AsheP(p.tower)));
+                        }
                         i.remove();
                     }
                 }else{
@@ -191,10 +246,11 @@ public class GameEngine {
                         Enemy e=j.next();
                         if (rectangleCollision(p.getAbsPosX(), p.getAbsPosY(), p.getProjSizeX(), p.getProjSizeY(), e.absPosX, e.absPosY, e.sizeX, e.sizeY)) {
                             if(p.ability.magicDamage){
-                                e.health-=(((p.tower.attackDamage[p.tower.level]*p.ability.scalingAD)+(p.tower.abilityPower[p.tower.level]*p.ability.scalingAP))*(e.magicResist/100));
+                                e.health-=(((p.tower.currentAttackDamage*p.ability.scalingAD)+(p.tower.currentAbilityPower*p.ability.scalingAP))*(e.magicResist/100));
                             } else{
-                                e.health-=(((p.tower.attackDamage[p.tower.level]*p.ability.scalingAD)+(p.tower.abilityPower[p.tower.level]*p.ability.scalingAP))-(e.armor));
+                                e.health-=(((p.tower.currentAttackDamage*p.ability.scalingAD)+(p.tower.currentAbilityPower*p.ability.scalingAP))-(e.armor));
                             }
+                            tempEvents.add(new TemporaryEvent(e,p.ability));
                             j.remove();
                             p.ability.pierce--;
                             if(p.ability.pierce<=0) i.remove();
@@ -362,5 +418,9 @@ public class GameEngine {
     
     public void addProjectile(Projectile p){
         activeProjectiles.add(p);
+    }
+
+    public void addBuff(TemporaryEvent e){
+        tempEvents.add(e);
     }
 }

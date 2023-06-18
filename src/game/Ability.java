@@ -19,6 +19,18 @@ abstract public class Ability {
     protected int projSizeY;
     protected Image projectile;
 
+    //aoe spell
+    protected int radius;
+    protected double duration;
+
+    //enemy-targeted event (only slow)
+    protected double slowFactor=1;
+
+    //tower-targeted event
+    protected double attackDamageFactor=1;
+    protected double attackSpeedFactor=1;
+    protected double abilityPowerFactor=1;
+
 
     public Ability(Tower t){
         tower=t;

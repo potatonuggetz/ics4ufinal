@@ -16,6 +16,7 @@ public class Caitlyn extends Tower{
         attackSpeed=new double[]{0,0.6,0.7,0.9,1.2,1.5};
         projectileSpeed=75;
         range=200;
+        towerAbilities.add(new CaitlynQ(this));
         try {
             this.image = ImageIO.read(new File("img/tower/caitlyn.png"));
         } catch (IOException e) {

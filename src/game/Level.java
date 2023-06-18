@@ -1,4 +1,5 @@
 import javax.imageio.ImageIO;
+package game;
 import java.awt.*;
 import java.io.*;
 import java.util.Queue;

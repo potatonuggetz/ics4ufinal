@@ -1,3 +1,4 @@
+package game;
 public class Pair <U, V> {
     public final U first;
     public final V second;

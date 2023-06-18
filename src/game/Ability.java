@@ -1,18 +1,30 @@
+package game;
+import java.awt.*;
 
-
-abstract class Ability {
+abstract public class Ability {
     protected String name;
     protected String description;
     protected double[] cooldown; //measured in seconds
     protected double timeLastUsed; //frame that ability was last used
     protected Tower tower;
 
+    // skillshot
+    protected boolean magicDamage;
+    protected double scalingAD;
+    protected double scalingAP;
+    protected int pierce;
+    protected int range;
+
+    protected int projSizeX;
+    protected int projSizeY;
+    protected Image projectile;
+
 
     public Ability(Tower t){
         tower=t;
     }
 
-    abstract void use();//make sure cooldown is set to current time
+    protected abstract void use(int x,int y,GameEngine g);//make sure cooldown is set to current time
 
     public String getName(){
         return name;

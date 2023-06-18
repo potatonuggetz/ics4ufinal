@@ -85,6 +85,17 @@ public class Level {
         if (s.equals("Kita")) return new Kita(spawnTime, path, paths.get(path).get(0).getStart().first, paths.get(path).get(0).getStart().second);
         if (s.equals("Ryo")) return new Ryo(spawnTime, path, paths.get(path).get(0).getStart().first, paths.get(path).get(0).getStart().second);
         if (s.equals("Nijika")) return new Nijika(spawnTime, path, paths.get(path).get(0).getStart().first, paths.get(path).get(0).getStart().second);
+        if (s.equals("Bocchisaur")) return new Bocchisaur(spawnTime, path, paths.get(path).get(0).getStart().first, paths.get(path).get(0).getStart().second);
+        if (s.equals("DyingBocchi")) return new DyingBocchi(spawnTime, path, paths.get(path).get(0).getStart().first, paths.get(path).get(0).getStart().second);
+        if (s.equals("HitoriGotoh")) return new HitoriGotoh(spawnTime, path, paths.get(path).get(0).getStart().first, paths.get(path).get(0).getStart().second);
+        if (s.equals("IkuyoKita")) return new IkuyoKita(spawnTime, path, paths.get(path).get(0).getStart().first, paths.get(path).get(0).getStart().second);
+        if (s.equals("Mango")) return new Mango(spawnTime, path, paths.get(path).get(0).getStart().first, paths.get(path).get(0).getStart().second);
+        if (s.equals("NijikaIjichi")) return new NijikaIjichi(spawnTime, path, paths.get(path).get(0).getStart().first, paths.get(path).get(0).getStart().second);
+        if (s.equals("RyoYamada")) return new RyoYamada(spawnTime, path, paths.get(path).get(0).getStart().first, paths.get(path).get(0).getStart().second);
+        if (s.equals("SadBoccher")) return new SadBoccher(spawnTime, path, paths.get(path).get(0).getStart().first, paths.get(path).get(0).getStart().second);
+        if (s.equals("SlugBocchi")) return new SlugBocchi(spawnTime, path, paths.get(path).get(0).getStart().first, paths.get(path).get(0).getStart().second);
+        if (s.equals("TracksuitGotoh")) return new TracksuitGotoh(spawnTime, path, paths.get(path).get(0).getStart().first, paths.get(path).get(0).getStart().second);
+        if (s.equals("TrashBocchi")) return new TrashBocchi(spawnTime, path, paths.get(path).get(0).getStart().first, paths.get(path).get(0).getStart().second);
         return null;
     }
 }

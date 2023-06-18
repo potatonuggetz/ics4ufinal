@@ -17,7 +17,7 @@ public class Vex extends Tower{
         projectileSpeed=75;
         range=100;
         try {
-            this.image = ImageIO.read(new File("vex.png"));
+            this.image = ImageIO.read(new File("img/tower/vex.png"));
         } catch (IOException e) {
             e.printStackTrace();
         }

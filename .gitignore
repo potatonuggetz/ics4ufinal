@@ -25,3 +25,6 @@ replay_pid*
 /out/
 /.idea/
 /ics4ufinal.iml
+
+# other
+/levels/template.txt

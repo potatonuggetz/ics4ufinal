@@ -17,7 +17,7 @@ public class Ashe extends Tower{
         projectileSpeed=125;
         range=150;
         try {
-            this.image = ImageIO.read(new File("ashe.png"));
+            this.image = ImageIO.read(new File("img/tower/ashe.png"));
         } catch (IOException e) {
             e.printStackTrace();
         }

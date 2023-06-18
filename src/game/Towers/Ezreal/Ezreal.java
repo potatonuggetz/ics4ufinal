@@ -17,7 +17,7 @@ public class Ezreal extends Tower{
         projectileSpeed=75;
         range=150;
         try {
-            this.image = ImageIO.read(new File("ezreal.png"));
+            this.image = ImageIO.read(new File("img/tower/ezreal.png"));
         } catch (IOException e) {
             e.printStackTrace();
         }

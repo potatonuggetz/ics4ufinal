@@ -17,7 +17,7 @@ public class Veigar extends Tower{
         projectileSpeed=20;
         range=100;
         try {
-            this.image = ImageIO.read(new File("veigar.png"));
+            this.image = ImageIO.read(new File("img/tower/veigar.png"));
         } catch (IOException e) {
             e.printStackTrace();
         }

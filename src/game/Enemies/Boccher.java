@@ -1,6 +1,9 @@
-package game;
+package game.Enemies;
 
 import javax.imageio.*;
+
+import game.Enemy;
+
 import java.io.*;
 
 public class Boccher extends Enemy {
@@ -14,9 +17,9 @@ public class Boccher extends Enemy {
         }
 
         name = "Boccher";
-        health = 100;
-        armor = 0;
-        magicResist = 0;
+        health = 1000;
+        armor = 10;
+        magicResist = 10;
         speed = 400;
         sizeX = 44;
         sizeY = 26;

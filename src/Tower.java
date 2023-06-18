@@ -28,7 +28,7 @@ abstract public class Tower {
 
     protected int projSizeX;
     protected int projSizeY;
-    protected Image projectile;
+    protected Image projectileAuto;
 
     public Tower(int x,int y){
         posX=x;

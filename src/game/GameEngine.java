@@ -158,8 +158,9 @@ public class GameEngine {
     }
 
     public void draw(JPanel panel, Graphics g) {
-        drawGameLayout(g);
+        g.drawImage(this.level.background, 0, 0, null);
         drawGameLogic(g);
+        drawGameLayout(g);
         if (selectedTower != null) {
             drawSelectedTower(g);
         }
@@ -168,7 +169,8 @@ public class GameEngine {
 
     // menu at bottom, gold, health, background
     public void drawGameLayout(Graphics g) {
-        g.drawImage(this.level.background, 0, 0, null);
+        Graphics2D g2d = (Graphics2D) g;
+        g2d.fillRect(0, 600, 1280, 120);
     }
 
     // towers, enemies, "bullets"

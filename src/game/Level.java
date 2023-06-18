@@ -1,5 +1,7 @@
 package game;
 
+import game.Enemies.*;
+
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.io.*;
@@ -16,7 +18,7 @@ public class Level {
     public Level(String file) {
         BufferedReader br = null;
         try {
-            br = new BufferedReader(new FileReader("1.txt"));
+            br = new BufferedReader(new FileReader(file));
         } catch (FileNotFoundException fe) {
             fe.printStackTrace();
             return;
@@ -34,7 +36,7 @@ public class Level {
             Pair<Integer, Integer> lastPoint = null;
             ArrayList<Line> p = new ArrayList<>();
             while (!(line = br.readLine()).equals(":Enemies")) {
-                if (line.startsWith("-")) {
+                if (line.startsWith("=")) {
                     if (p.size() != 0) {
                         paths.add(p);
                     }
@@ -52,7 +54,7 @@ public class Level {
             }
             Queue<Enemy> q = new LinkedList<>();;
             while (!(line = br.readLine()).equals(":Background")) {
-                if (line.startsWith("-")) {
+                if (line.startsWith("=")) {
                     if (!q.isEmpty()) enemies.add(q);
                     q = new LinkedList<>();
                     continue;
@@ -75,7 +77,11 @@ public class Level {
     }
 
     private Enemy matchEnemy(String s, int spawnTime, int path) {
+        //XD
         if (s.equals("Boccher")) return new Boccher(spawnTime, path, paths.get(path).get(0).getStart().first, paths.get(path).get(0).getStart().second);
+        if (s.equals("Kita")) return new Kita(spawnTime, path, paths.get(path).get(0).getStart().first, paths.get(path).get(0).getStart().second);
+        if (s.equals("Ryo")) return new Ryo(spawnTime, path, paths.get(path).get(0).getStart().first, paths.get(path).get(0).getStart().second);
+        if (s.equals("Nijika")) return new Nijika(spawnTime, path, paths.get(path).get(0).getStart().first, paths.get(path).get(0).getStart().second);
         return null;
     }
 }

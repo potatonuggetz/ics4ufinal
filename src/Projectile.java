@@ -9,6 +9,12 @@ public class Projectile {
     private final boolean auto;
     Enemy target;
 
+    // skillshot
+    protected boolean magicDamage;
+    protected double scalingAD;
+    protected double scalingAP;
+    protected int pierce;
+
     // visual
     protected int posX;
     protected int posY;

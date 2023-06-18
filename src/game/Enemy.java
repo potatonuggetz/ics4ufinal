@@ -22,6 +22,7 @@ abstract public class Enemy implements Comparable<Enemy>{
     protected double absPosX;
     protected double absPosY;
     protected double speed;
+    protected double currentSpeed;
     protected int path;
     protected int leg;
     protected int distanceFromEnd;

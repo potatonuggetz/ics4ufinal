@@ -13,6 +13,8 @@ public class GameEngine {
     private ArrayList<Enemy> shownEnemies;
     private ArrayList<Enemy> dyingEnemies;
     private ArrayList<Projectile> activeProjectiles;
+    private ArrayList<TemporaryEvent> tempEvents;
+    private HashMap<Integer,TemporaryEvent> eventsToRemove;
     public ArrayList<Tower> availableTowers;
     Tower selectedTower;
     private Level level;
@@ -104,6 +106,36 @@ public class GameEngine {
             return;
         }
 
+        //remove all buffs to be removed
+        {
+            if(eventsToRemove.containsKey(currentFrame)){
+                TemporaryEvent e=eventsToRemove.get(currentFrame);
+                if(e.type==TemporaryEvent.TARGET_ENEMY){
+                    e.targetEnemy.currentSpeed/=e.ability.slowFactor;    
+                }
+                eventsToRemove.remove(currentFrame);
+            }
+        }
+
+        //process all buffs
+        {
+            ListIterator<TemporaryEvent> i=tempEvents.listIterator();
+            while(i.hasNext()){
+                TemporaryEvent e=i.next();
+                if(e.type==TemporaryEvent.TARGET_ENEMY){
+                    e.targetEnemy.currentSpeed*=e.ability.slowFactor;
+                    //if there are somehow 2 buffs expiring on the same frame then just offset it by 1
+                    int j=0;
+                    while(eventsToRemove.containsKey(currentFrame+(int)(e.ability.duration*FPS)+j)){
+                        j++;
+                    }
+                    eventsToRemove.put(currentFrame+(int)(e.ability.duration*FPS)+j,e);
+                }
+
+                i.remove();
+            }
+        }
+
         // add next enemy
         if (System.currentTimeMillis() >= nextEnemyTime && nextEnemyTime != -1) {
             shownEnemies.add(nextWave.remove());
@@ -122,8 +154,8 @@ public class GameEngine {
                 Line leg;
                 leg = this.level.paths.get(e.path).get(e.leg);
 
-                e.absPosX += (e.speed * (lag * 0.001)) * leg.getDirection().first;
-                e.absPosY += (e.speed * (lag * 0.001)) * leg.getDirection().second;
+                e.absPosX += (e.currentSpeed * (lag * 0.001)) * leg.getDirection().first;
+                e.absPosY += (e.currentSpeed * (lag * 0.001)) * leg.getDirection().second;
 
                 if ((e.absPosX * leg.getSigns().first >= leg.getEnd().first * leg.getSigns().first) && (e.absPosY * leg.getSigns().second >= leg.getEnd().second * leg.getSigns().second)) {
                     e.leg++;

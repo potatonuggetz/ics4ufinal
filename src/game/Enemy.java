@@ -8,6 +8,7 @@ abstract public class Enemy implements Comparable<Enemy>{
     protected double armor;
     protected double magicResist;
     private static ArrayList<Enemy> enemyList = new ArrayList<Enemy>();
+    protected int spawnTime;
 
     // visual
     protected int posX;
@@ -28,8 +29,14 @@ abstract public class Enemy implements Comparable<Enemy>{
 
     //TODO: crowd control
 
-    public Enemy(){
-        
+    public Enemy(int spawnTime, int path, int startX, int startY){
+        this.spawnTime = spawnTime;
+        this.path = path;
+        this.posX = startX;
+        this.absPosX = startX;
+        this.posY = startY;
+        this.absPosY = startY;
+        leg = 0;
         enemyList.add(this); 
     }
 

@@ -29,6 +29,7 @@ abstract public class Ability {
     //tower-targeted event
     protected double attackDamageFactor=1;
     protected double attackSpeedFactor=1;
+    protected double abilityPowerFactor=1;
 
 
     public Ability(Tower t){

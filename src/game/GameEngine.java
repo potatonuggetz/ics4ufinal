@@ -1,6 +1,9 @@
 package game;
 
 import javax.imageio.ImageIO;
+
+import game.Towers.Ashe.AsheP;
+
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.io.File;
@@ -228,6 +231,10 @@ public class GameEngine {
                 if (p.isAuto()) {
                     if (rectangleCollision(p.getAbsPosX(), p.getAbsPosY(), p.getProjSizeX(), p.getProjSizeY(), p.target.absPosX, p.target.absPosY, p.target.sizeX, p.target.sizeY)) {
                         p.target.health -= p.tower.currentAttackDamage - p.target.armor;
+                        if(p.hasSlow){
+                            //only ashe has slow passive
+                            tempEvents.add(new TemporaryEvent(p.target,new AsheP(p.tower)));
+                        }
                         i.remove();
                     }
                 }else{
@@ -240,6 +247,9 @@ public class GameEngine {
                                 e.health-=(((p.tower.currentAttackDamage*p.ability.scalingAD)+(p.tower.currentAbilityPower*p.ability.scalingAP))*(e.magicResist/100));
                             } else{
                                 e.health-=(((p.tower.currentAttackDamage*p.ability.scalingAD)+(p.tower.currentAbilityPower*p.ability.scalingAP))-(e.armor));
+                            }
+                            if(p.hasSlow){
+                                tempEvents.add(new TemporaryEvent(e,p.ability));
                             }
                             j.remove();
                             p.ability.pierce--;

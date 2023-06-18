@@ -12,7 +12,9 @@ public class AsheW extends Ability{
         magicDamage=false;
         scalingAD=3.5;
         scalingAP=0;
-        pierce=727;
+        pierce=1;
+        slowFactor=0.6;
+        duration=2;
     }
     
     public void use(int x,int y,GameEngine g){

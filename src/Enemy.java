@@ -7,6 +7,7 @@ abstract public class Enemy {
     protected double armor;
     protected double magicResist;
     private static ArrayList<Enemy> enemyList = new ArrayList<Enemy>();
+    protected int spawnTime;
 
     // visual
     protected int posX;
@@ -26,8 +27,9 @@ abstract public class Enemy {
 
     //TODO: crowd control
 
-    public Enemy(){
-        
+    public Enemy(int spawnTime, int path){
+        this.spawnTime = spawnTime;
+        this.path = path;
         enemyList.add(this); 
     }
 

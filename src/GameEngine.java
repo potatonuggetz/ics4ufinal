@@ -14,6 +14,7 @@ public class GameEngine {
 
     private static final double FPS = 60.0;
     private static int currentFrame = 0;
+    long startTime;
 
     public ArrayList<Tower> availableTowers;
 
@@ -34,39 +35,37 @@ public class GameEngine {
         activeProjectiles = new ArrayList<>();
     }
 
-    long starttime;
-
-    public void update() {
+    public void update(long lg) {
         currentFrame++;
 
-        if (shownEnemies.size() == 0) {
-            starttime = System.currentTimeMillis();
-            shownEnemies.add(this.level.enemies.peek());
-        }
+        if (lg > 2147483647L) lg = 16;
+        int lag = (int)lg;
 
         // move enemy
         {
             ListIterator<Enemy> i = shownEnemies.listIterator();
             while (i.hasNext()) {
                 Enemy e = i.next();
-                Line leg = this.level.paths.get(e.path).get(e.leg);
+                Line leg;
+                try {
+                    leg = this.level.paths.get(e.path).get(e.leg);
+                } catch (Exception ee) {
+                    break;
+                }
 
-                e.absPosX += (e.speed / FPS) * leg.getDirection().first;
-                e.absPosY += (e.speed / FPS) * leg.getDirection().second;
+                e.absPosX += (e.speed * (lag * 0.001)) * leg.getDirection().first;
+                e.absPosY += (e.speed * (lag * 0.001)) * leg.getDirection().second;
 
-                System.out.println((e.speed / FPS) * leg.getDirection().first);
-
-                if ((e.absPosX * leg.getSigns().first > leg.getEnd().first * leg.getSigns().first) && (e.absPosY * leg.getSigns().second > leg.getEnd().second * leg.getSigns().second)) {
+                if ((e.absPosX * leg.getSigns().first >= leg.getEnd().first * leg.getSigns().first) && (e.absPosY * leg.getSigns().second >= leg.getEnd().second * leg.getSigns().second)) {
                     e.leg++;
 
                     if (e.leg >= this.level.paths.get(e.path).size()) {
-                        //health--;
-                        //e.posX = leg.getEnd().first;
-                        //e.posY = leg.getEnd().second;
-                        //e.deathAnimationCount = 0;
-                        //dyingEnemies.add(e);
+                        health--;
+                        e.posX = leg.getEnd().first;
+                        e.posY = leg.getEnd().second;
+                        e.deathAnimationCount = 0;
+                        dyingEnemies.add(e);
                         i.remove();
-                        System.out.println(System.currentTimeMillis() - starttime);
                         continue;
                     }
 
@@ -91,7 +90,7 @@ public class GameEngine {
             ListIterator<Projectile> i = activeProjectiles.listIterator();
             while (i.hasNext()) {
                 Projectile p = i.next();
-                p.move();
+                p.move(lag);
 
                 if (p.isAuto()) {
                     if (rectangleCollision(p.getAbsPosX(), p.getAbsPosY(), p.getProjSizeX(), p.getProjSizeY(), p.target.absPosX, p.target.absPosY, p.target.sizeX, p.target.sizeY)) {

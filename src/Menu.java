@@ -12,6 +12,7 @@ public class Menu extends JPanel implements MouseListener, KeyListener, Runnable
     public int currentMenu = 2; // temp
 
     GameEngine engine;
+    long lastTime;
 
     public Menu(JFrame frame) {
         super();
@@ -29,6 +30,7 @@ public class Menu extends JPanel implements MouseListener, KeyListener, Runnable
 
     public void startGame() {
         engine = new GameEngine(new Level("test")); // temp
+        lastTime = 0;
     }
 
     public void paintComponent(Graphics g) {
@@ -62,7 +64,9 @@ public class Menu extends JPanel implements MouseListener, KeyListener, Runnable
     public void drawGame(Graphics g) {
         Graphics2D g2d = (Graphics2D) g;
 
-        engine.update();
+        long currTime = System.currentTimeMillis();
+        engine.update(currTime - lastTime);
+        lastTime = currTime;
         engine.draw(this, g);
     }
 

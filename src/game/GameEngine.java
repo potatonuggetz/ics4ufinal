@@ -87,6 +87,8 @@ public class GameEngine {
                     Line x=new Line(new Pair<>(t.posX,t.posY),new Pair<>(e.posX,e.posY));
                     if(x.getDistance()<=t.range){
                         activeProjectiles.add(new Projectile(t, e));
+                        t.timeLastAttacked=currentFrame;
+                        break;
                     }
                 }
             }
@@ -110,14 +112,14 @@ public class GameEngine {
                     while(j.hasNext()){
                         Enemy e=j.next();
                         if (rectangleCollision(p.getAbsPosX(), p.getAbsPosY(), p.getProjSizeX(), p.getProjSizeY(), e.absPosX, e.absPosY, e.sizeX, e.sizeY)) {
-                            if(p.magicDamage){
-                                e.health-=(((p.tower.attackDamage[p.tower.level]*p.scalingAD)+(p.tower.abilityPower[p.tower.level]*p.scalingAP))*(e.magicResist/100));
+                            if(p.ability.magicDamage){
+                                e.health-=(((p.tower.attackDamage[p.tower.level]*p.ability.scalingAD)+(p.tower.abilityPower[p.tower.level]*p.ability.scalingAP))*(e.magicResist/100));
                             } else{
-                                e.health-=(((p.tower.attackDamage[p.tower.level]*p.scalingAD)+(p.tower.abilityPower[p.tower.level]*p.scalingAP))-(e.armor));
+                                e.health-=(((p.tower.attackDamage[p.tower.level]*p.ability.scalingAD)+(p.tower.abilityPower[p.tower.level]*p.ability.scalingAP))-(e.armor));
                             }
                             j.remove();
-                            p.pierce--;
-                            if(p.pierce<=0) i.remove();
+                            p.ability.pierce--;
+                            if(p.ability.pierce<=0) i.remove();
                         }
                     }
                 }
@@ -188,5 +190,9 @@ public class GameEngine {
 
     public ArrayList<Tower> getPlacedTowers(){
         return placedTowers;
+    }
+    
+    public void addProjectile(Projectile p){
+        activeProjectiles.add(p);
     }
 }

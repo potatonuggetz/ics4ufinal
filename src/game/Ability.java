@@ -8,6 +8,11 @@ abstract public class Ability {
     protected double timeLastUsed; //frame that ability was last used
     protected Tower tower;
 
+    // skillshot
+    protected boolean magicDamage;
+    protected double scalingAD;
+    protected double scalingAP;
+    protected int pierce;
     protected int range;
 
     protected int projSizeX;
@@ -19,7 +24,7 @@ abstract public class Ability {
         tower=t;
     }
 
-    protected abstract void use();//make sure cooldown is set to current time
+    protected abstract void use(int x,int y,GameEngine g);//make sure cooldown is set to current time
 
     public String getName(){
         return name;

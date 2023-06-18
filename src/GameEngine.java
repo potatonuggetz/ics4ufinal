@@ -103,6 +103,22 @@ public class GameEngine {
                         p.target.health -= p.tower.attackDamage[p.tower.level] - p.target.armor;
                         i.remove();
                     }
+                }else{
+                    ArrayList<Enemy> hittableEnemies = new ArrayList<>(shownEnemies);
+                    ListIterator<Enemy> j=hittableEnemies.listIterator();
+                    while(j.hasNext()){
+                        Enemy e=j.next();
+                        if (rectangleCollision(p.getAbsPosX(), p.getAbsPosY(), p.getProjSizeX(), p.getProjSizeY(), e.absPosX, e.absPosY, e.sizeX, e.sizeY)) {
+                            if(p.magicDamage){
+                                e.health-=(((p.tower.attackDamage[p.tower.level]*p.scalingAD)+(p.tower.abilityPower[p.tower.level]*p.scalingAP))*(e.magicResist/100));
+                            } else{
+                                e.health-=(((p.tower.attackDamage[p.tower.level]*p.scalingAD)+(p.tower.abilityPower[p.tower.level]*p.scalingAP))-(e.armor));
+                            }
+                            j.remove();
+                            p.pierce--;
+                            if(p.pierce<=0) i.remove();
+                        }
+                    }
                 }
             }
         }

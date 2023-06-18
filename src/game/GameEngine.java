@@ -1,6 +1,10 @@
 package game;
-import javax.swing.*;
+
+import javax.imageio.ImageIO;
 import java.awt.*;
+import java.awt.event.MouseEvent;
+import java.io.File;
+import java.io.IOException;
 import java.util.*;
 
 public class GameEngine {
@@ -22,40 +26,91 @@ public class GameEngine {
     int gold;
     int health;
     int wave;
+    boolean wavePaused;
+
+    Font gamerfont;
+
+    // images
+    Image towerframe, towerframeSelected;
+    Image goldDisplay, hpDisplay, waveStart, waveProgress, waveStartHover;
+    Image waveIcon, heartIcon, goldIcon;
+    Image[] deathAnimations;
 
     public GameEngine(Level level) {
         this.level = level;
         nextEnemyTime = -1;
         wave = 0;
+        health = 15;
+        gold = 100;
 
+        // initialize a bunch of stuff
         placedTowers = new ArrayList<>();
         shownEnemies = new ArrayList<>();
         dyingEnemies = new ArrayList<>();
         availableTowers = new ArrayList<>();
         activeProjectiles = new ArrayList<>();
+        nextWave = new LinkedList<>();
+
+        // font for gold, health, wave display
+        gamerfont = new Font("Consolas", Font.PLAIN,40);
+
+        // add images
+        try {
+           towerframe = ImageIO.read(new File("img/ui/game_menu_tower_frame.png"));
+           towerframeSelected = ImageIO.read(new File("img/ui/game_menu_tower_selected.png"));
+           goldDisplay = ImageIO.read(new File("img/ui/game_menu_golddisplay.png"));
+           hpDisplay = ImageIO.read(new File("img/ui/game_menu_hpdisplay.png"));
+           waveStart = ImageIO.read(new File("img/ui/game_menu_wavestart.png"));
+           waveStartHover = ImageIO.read(new File("img/ui/game_menu_wavestarthover.png"));
+           waveProgress = ImageIO.read(new File("img/ui/game_menu_waveprogress.png"));
+           waveIcon = ImageIO.read(new File("img/ui/game_menu_waveicon.png"));
+           heartIcon = ImageIO.read(new File("img/ui/game_menu_hearticon.png"));
+           goldIcon = ImageIO.read(new File("img/ui/game_menu_goldicon.png"));
+
+           deathAnimations = new Image[20];
+           for (int i = 0; i < 20; i++) {
+               deathAnimations[i] = ImageIO.read(new File("img/ui/boom/death" + i + ".png"));
+           }
+        } catch (IOException e) {
+
+        }
     }
 
+    /*
+    Description: starts new wave
+    Parameters/Return: none
+     */
     public void startWave() {
         wave++;
         nextWave = this.level.enemies.remove();
         if (!nextWave.isEmpty()) nextEnemyTime = System.currentTimeMillis() + nextWave.peek().spawnTime;
     }
 
+    /*
+    Description: game loop, updates everything based on how much time since last call
+    Parameters: long - lag: (approx) time since last call
+    Return: none
+     */
     public void update(long lg) {
         currentFrame++;
 
+        // for first time run
         if (lg > 2147483647L) lg = 16;
         int lag = (int)lg;
 
-        // wave paused
-        if (nextEnemyTime == -1) {
+        // check if wave paused
+        wavePaused = nextEnemyTime == -1 && shownEnemies.isEmpty() && nextWave.isEmpty();
+        if (wavePaused) {
             return;
         }
 
-        if (System.currentTimeMillis() >= nextEnemyTime) {
+        // add next enemy
+        if (System.currentTimeMillis() >= nextEnemyTime && nextEnemyTime != -1) {
+            shownEnemies.add(nextWave.remove());
             if (!nextWave.isEmpty()) {
-                shownEnemies.add(nextWave.remove());
-                if (!nextWave.isEmpty()) nextEnemyTime = System.currentTimeMillis() + nextWave.peek().spawnTime;
+                nextEnemyTime = System.currentTimeMillis() + nextWave.peek().spawnTime;
+            } else {
+                nextEnemyTime = -1;
             }
         }
 
@@ -168,6 +223,11 @@ public class GameEngine {
         }
     }
 
+    /*
+    Description: checks if two rectangles collide
+    Parameters: rectangle width and heights (to calculate sides)
+    Return: boolean - do the rectangles collide?
+     */
     public boolean rectangleCollision(double Ax, double Ay, int Aw, int Ah, double Bx, double By, int Bw, int Bh) {
         return  (Ax - Aw) < (Bx + Bw) &&
                 (Ax + Aw) > (Bx - Bw) &&
@@ -175,23 +235,58 @@ public class GameEngine {
                 (Ay + Ah) > (By - Bh);
     }
 
-    public void draw(JPanel panel, Graphics g) {
+    /*
+    Description: drawing loop
+    Parameters: Menu, Graphics (to draw)
+    Return: none
+     */
+    public void draw(Menu menu, Graphics g) {
         g.drawImage(this.level.background, 0, 0, null);
         drawGameLogic(g);
-        drawGameLayout(g);
+        drawGameLayout(menu, g);
         if (selectedTower != null) {
             drawSelectedTower(g);
         }
         drawEnemyDeath(g);
     }
 
-    // menu at bottom, gold, health, background
-    public void drawGameLayout(Graphics g) {
+    /*
+    Description: draws menu at bottom, gold, health
+    Parameters: Menu, Graphics (to draw)
+    Return: none
+     */
+    public void drawGameLayout(Menu menu, Graphics g) {
         Graphics2D g2d = (Graphics2D) g;
-        g2d.fillRect(0, 600, 1280, 120);
+        FontMetrics metrics = g.getFontMetrics(gamerfont);
+        g.setFont(gamerfont);
+        g.drawImage(hpDisplay, 0, 600, null);
+        g.drawImage(heartIcon, (171 - (10+heartIcon.getWidth(null)+metrics.stringWidth(String.valueOf(health)))) / 2, 644, null);
+        g.drawString(String.valueOf(health), ((171 - (10+heartIcon.getWidth(null)+metrics.stringWidth(String.valueOf(health)))) / 2) + heartIcon.getWidth(null)+5, 644 + metrics.getAscent());
+        g.drawImage(goldDisplay, 171, 600, null);
+        g.drawImage(goldIcon, 171 + ((171 - (6+goldIcon.getWidth(null)+metrics.stringWidth(String.valueOf(gold)))) / 2), 644, null);
+        g.drawString(String.valueOf(gold), (171 + ((171 - (10+goldIcon.getWidth(null)+metrics.stringWidth(String.valueOf(gold)))) / 2)) + goldIcon.getWidth(null)+3, 644 + metrics.getAscent());
+
+        if (wavePaused) {
+            menu.drawButton(g2d, waveStart, waveStartHover, 342, 600, 170, 120);
+        } else {
+            g.drawImage(waveProgress, 342, 600, null);
+        }
+        g.drawImage(waveIcon, 342 + ((170 - (10+waveIcon.getWidth(null)+metrics.stringWidth(String.valueOf(wave)))) / 2), 644, null);
+        g.drawString(String.valueOf(wave), (342 + ((170 - (10+waveIcon.getWidth(null)+metrics.stringWidth(String.valueOf(wave)))) / 2)) + waveIcon.getWidth(null)+5, 644 + metrics.getAscent());
+
+        menu.drawButton(g2d, towerframe, towerframeSelected, 256*2, 600, 128, 120);
+        menu.drawButton(g2d, towerframe, towerframeSelected, 256*2+128, 600, 128, 120);
+        menu.drawButton(g2d, towerframe, towerframeSelected, 256*3, 600, 128, 120);
+        menu.drawButton(g2d, towerframe, towerframeSelected, 256*3+128, 600, 128, 120);
+        menu.drawButton(g2d, towerframe, towerframeSelected, 256*4, 600, 128, 120);
+        menu.drawButton(g2d, towerframe, towerframeSelected, 256*4+128, 600, 128, 120);
     }
 
-    // towers, enemies, "bullets"
+    /*
+    Description: draws towers, enemies, "bullets"
+    Parameters: Graphics (to draw)
+    Return: none
+     */
     public void drawGameLogic(Graphics g) {
         for (Enemy e : this.shownEnemies) {
             g.drawImage(e.image, e.posX-e.sizeX, e.posY-e.sizeY, null);
@@ -204,7 +299,11 @@ public class GameEngine {
         }
     }
 
-    // tower highlight, tower info, ability buttons
+    /*
+    Description: draws tower highlight, tower info, ability buttons
+    Parameters: Graphics (to draw)
+    Return: none
+     */
     public void drawSelectedTower(Graphics g) {
 
     }
@@ -214,12 +313,38 @@ public class GameEngine {
         ListIterator<Enemy> i = dyingEnemies.listIterator();
         while (i.hasNext()) {
             Enemy e = i.next();
-            if (e.deathAnimationCount >= e.deathAnimations.length) {
+            if (e.deathAnimationCount > 20) {
                 i.remove();
             }
-            g.drawImage(e.deathAnimations[e.deathAnimationCount], e.posX-e.sizeX, e.posY-e.sizeY, null);
+            g.drawImage(deathAnimations[e.deathAnimationCount], e.posX-e.sizeX, e.posY-e.sizeY, null);
             e.deathAnimationCount++;
         }
+    }
+
+    private Point myGetMousePosition() {
+        return MouseInfo.getPointerInfo().getLocation();
+    }
+
+    private boolean inRectangle(int x, int y, int left, int right, int up, int down) {
+        return x > left && x < right && y > up && y < down;
+    }
+
+    private boolean inRectangle(MouseEvent e, int left, int right, int up, int down) {
+        return e.getX() > left && e.getX() < right && e.getY() > up && e.getY() < down;
+    }
+
+    public void mouseClicked(MouseEvent e) {
+        if (inRectangle(e, 384, 512, 600, 720) && wavePaused) {
+            startWave();
+        }
+    }
+
+    public void mousePressed(MouseEvent e) {
+
+    }
+
+    public void mouseReleased(MouseEvent e) {
+
     }
 
     //getters setters

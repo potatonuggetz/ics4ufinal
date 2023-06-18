@@ -8,7 +8,7 @@ public class VexQ extends Ability{
         cooldown=new double[]{1000,8,7,6,5,4};
         projSizeX=100;
         projSizeY=100;
-        range=400;
+        range=200;
         magicDamage=true;
         scalingAD=0;
         scalingAP=2;

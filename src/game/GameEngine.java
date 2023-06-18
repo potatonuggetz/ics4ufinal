@@ -148,6 +148,24 @@ public class GameEngine {
                 }
             }
         }
+
+        //check for dead enemies
+        {
+            ListIterator<Enemy> i = shownEnemies.listIterator();
+            while (i.hasNext()) {
+                Enemy e=i.next();
+                if(e.health<=0){
+                    for(Tower t:placedTowers){
+                        Line l=new Line(new Pair<>(e.posX,e.posY),new Pair<>(e.posX,e.posY));
+                        if(l.getDistance()<=250) t.xp+=10;
+                        if(t.xp>=100&&t.level<5) {
+                            t.xp=0;
+                            t.level++;
+                        }
+                    }
+                }
+            }
+        }
     }
 
     public boolean rectangleCollision(double Ax, double Ay, int Aw, int Ah, double Bx, double By, int Bw, int Bh) {

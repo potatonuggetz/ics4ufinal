@@ -10,6 +10,6 @@ public class Ashe extends Tower{
         abilityPower=new double[]{0,0,0,0,0,0};
         attackSpeed=new double[]{0,0.6,0.8,1.3,1.9,3};
         projectileSpeed=125;
-        range=275;
+        range=150;
     }
 }

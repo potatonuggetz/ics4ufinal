@@ -8,7 +8,7 @@ public class AsheW extends Ability{
         cooldown=new double[]{1000,8,7,6,5,4};
         projSizeX=5;
         projSizeY=5;
-        range=400;
+        range=200;
         magicDamage=false;
         scalingAD=3.5;
         scalingAP=0;

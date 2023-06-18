@@ -8,7 +8,7 @@ public class CaitlynQ extends Ability{
         cooldown=new double[]{1000,10,9,8,7,6};
         projSizeX=50;
         projSizeY=50;
-        range=500;
+        range=300;
         magicDamage=false;
         scalingAD=3.5;
         scalingAP=0;

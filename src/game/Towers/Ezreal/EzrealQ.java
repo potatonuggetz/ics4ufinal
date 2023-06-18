@@ -8,7 +8,7 @@ public class EzrealQ extends Ability{
         cooldown=new double[]{1000,4,3.5,3,2,1};
         projSizeX=35;
         projSizeY=35;
-        range=400;
+        range=200;
         magicDamage=false;
         scalingAD=3;
         scalingAP=0;

@@ -10,6 +10,6 @@ public class Vex extends Tower{
         abilityPower=new double[]{0,50,100,150,200,250};
         attackSpeed=new double[]{0,0.6,0.7,0.8,0.9,1.0};
         projectileSpeed=75;
-        range=200;
+        range=100;
     }
 }

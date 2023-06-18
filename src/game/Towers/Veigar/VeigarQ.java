@@ -8,7 +8,7 @@ public class VeigarQ extends Ability{
         cooldown=new double[]{1000,6,5.5,5,4.5,4};
         projSizeX=30;
         projSizeY=30;
-        range=300;
+        range=150;
         magicDamage=true;
         scalingAD=0;
         scalingAP=1.5;

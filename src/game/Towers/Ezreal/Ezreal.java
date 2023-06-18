@@ -10,6 +10,6 @@ public class Ezreal extends Tower{
         abilityPower=new double[]{0,0,0,0,0,0};
         attackSpeed=new double[]{0,0.8,0.9,1.3,1.7,2};
         projectileSpeed=75;
-        range=275;
+        range=150;
     }
 }

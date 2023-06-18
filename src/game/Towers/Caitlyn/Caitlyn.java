@@ -10,6 +10,6 @@ public class Caitlyn extends Tower{
         abilityPower=new double[]{0,0,0,0,0,0};
         attackSpeed=new double[]{0,0.6,0.7,0.9,1.2,1.5};
         projectileSpeed=75;
-        range=300;
+        range=200;
     }
 }

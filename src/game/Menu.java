@@ -78,6 +78,31 @@ public class Menu extends JPanel implements MouseListener, KeyListener, Runnable
 
     }
 
+    protected boolean drawButton(Graphics2D g, Image img, Image imghover, int posX, int posY, int width, int height) {
+        Point mousePos = myGetMousePosition();
+        boolean hoveredOver = mousePos.x > posX && mousePos.x < posX + width && mousePos.y > posY && mousePos.y < posY + height;
+        if (hoveredOver && imghover != null) {
+            g.drawImage(imghover, posX, posY, null);
+        } else {
+            g.drawImage(img, posX, posY, null);
+        }
+        return hoveredOver;
+    }
+
+    protected void drawCenteredString(Graphics g, String text, Rectangle rect, Font font, int offsetX, int offsetY) {
+        FontMetrics metrics = g.getFontMetrics(font);
+        int x = rect.x + (rect.width - metrics.stringWidth(text)) / 2;
+        int y = rect.y + ((rect.height - metrics.getHeight()) / 2) + metrics.getAscent();
+        g.setFont(font);
+        g.drawString(text, x+offsetX, y+offsetY);
+    }
+
+    private Point myGetMousePosition() {
+        Point p = MouseInfo.getPointerInfo().getLocation();
+        SwingUtilities.convertPointFromScreen(p, this);
+        return p;
+    }
+
     public void windowOpened(WindowEvent e) {
 
     }
@@ -127,11 +152,7 @@ public class Menu extends JPanel implements MouseListener, KeyListener, Runnable
     }
 
     public void keyPressed(KeyEvent e) {
-        if (currentMenu == MENU_GAME) {
-            if (e.getKeyCode() == KeyEvent.VK_SPACE) {
-                engine.startWave();
-            }
-        }
+
     }
 
     public void keyReleased(KeyEvent e) {
@@ -139,15 +160,21 @@ public class Menu extends JPanel implements MouseListener, KeyListener, Runnable
     }
 
     public void mouseClicked(MouseEvent e) {
-
+        if (currentMenu == MENU_GAME) {
+            engine.mouseClicked(e);
+        }
     }
 
     public void mousePressed(MouseEvent e) {
-
+        if (currentMenu == MENU_GAME) {
+            engine.mousePressed(e);
+        }
     }
 
     public void mouseReleased(MouseEvent e) {
-
+        if (currentMenu == MENU_GAME) {
+            engine.mouseReleased(e);
+        }
     }
 
     public void mouseEntered(MouseEvent e) {

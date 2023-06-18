@@ -16,7 +16,6 @@ abstract public class Enemy implements Comparable<Enemy>{
     protected int sizeX;
     protected int sizeY;
     protected Image image;
-    protected Image[] deathAnimations;
     protected int deathAnimationCount;
 
     // movement

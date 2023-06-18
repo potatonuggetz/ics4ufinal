@@ -9,7 +9,7 @@ public class Menu extends JPanel implements MouseListener, KeyListener, Runnable
     public static final int MENU_GAME = 2;
     public static final int MENU_CREDITS = 3;
     public static final int MENU_GAME_RESULTS = 4;
-    public int currentMenu = 0;
+    public int currentMenu = 2; // temp
 
     GameEngine engine;
 
@@ -23,11 +23,12 @@ public class Menu extends JPanel implements MouseListener, KeyListener, Runnable
         addMouseWheelListener(this);
         frame.addWindowListener(this);
 
+        startGame(); // temp
         new Thread(this).start();
     }
 
     public void startGame() {
-
+        engine = new GameEngine(new Level("test")); // temp
     }
 
     public void paintComponent(Graphics g) {

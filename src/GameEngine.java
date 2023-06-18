@@ -34,8 +34,16 @@ public class GameEngine {
         activeProjectiles = new ArrayList<>();
     }
 
+    long starttime;
+
     public void update() {
         currentFrame++;
+
+        if (shownEnemies.size() == 0) {
+            starttime = System.currentTimeMillis();
+            shownEnemies.add(this.level.enemies.peek());
+        }
+
         // move enemy
         {
             ListIterator<Enemy> i = shownEnemies.listIterator();
@@ -46,16 +54,19 @@ public class GameEngine {
                 e.absPosX += (e.speed / FPS) * leg.getDirection().first;
                 e.absPosY += (e.speed / FPS) * leg.getDirection().second;
 
+                System.out.println((e.speed / FPS) * leg.getDirection().first);
+
                 if ((e.absPosX * leg.getSigns().first > leg.getEnd().first * leg.getSigns().first) && (e.absPosY * leg.getSigns().second > leg.getEnd().second * leg.getSigns().second)) {
                     e.leg++;
 
                     if (e.leg >= this.level.paths.get(e.path).size()) {
-                        health--;
-                        e.posX = leg.getEnd().first;
-                        e.posY = leg.getEnd().second;
-                        e.deathAnimationCount = 0;
-                        dyingEnemies.add(e);
+                        //health--;
+                        //e.posX = leg.getEnd().first;
+                        //e.posY = leg.getEnd().second;
+                        //e.deathAnimationCount = 0;
+                        //dyingEnemies.add(e);
                         i.remove();
+                        System.out.println(System.currentTimeMillis() - starttime);
                         continue;
                     }
 

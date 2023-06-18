@@ -1,3 +1,6 @@
+package game.Towers.Caitlyn;
+import game.*;
+
 public class Caitlyn extends Tower{
     public Caitlyn(int x,int y){
         super(x,y);

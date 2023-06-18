@@ -1,6 +1,7 @@
+package game;
 import java.awt.*;
 
-abstract class Ability {
+abstract public class Ability {
     protected String name;
     protected String description;
     protected double[] cooldown; //measured in seconds
@@ -18,7 +19,7 @@ abstract class Ability {
         tower=t;
     }
 
-    abstract void use();//make sure cooldown is set to current time
+    protected abstract void use();//make sure cooldown is set to current time
 
     public String getName(){
         return name;

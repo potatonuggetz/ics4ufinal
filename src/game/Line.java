@@ -1,3 +1,4 @@
+package game;
 public class Line {
     private final Pair<Integer, Integer> start;
     private final Pair<Integer, Integer> end;

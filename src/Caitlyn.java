@@ -1,6 +1,6 @@
 public class Caitlyn extends Tower{
-    public Caitlyn(int x,int y,GameEngine g){
-        super(x,y,g);
+    public Caitlyn(int x,int y){
+        super(x,y);
         name="Caitlyn";
         description="The Sheriff of Piltover";
         attackDamage=new double[]{0,10,20,30,40,50};

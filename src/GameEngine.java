@@ -7,9 +7,10 @@ import java.util.ListIterator;
 public class GameEngine {
 
     private ArrayList<Tower> placedTowers;
-    public ArrayList<Enemy> shownEnemies;
-    public ArrayList<Enemy> dyingEnemies;
-    public Level level;
+    private ArrayList<Enemy> shownEnemies;
+    private ArrayList<Enemy> dyingEnemies;
+    private ArrayList<Projectile> activeProjectiles;
+    private Level level;
 
     private static final double FPS = 60.0;
     private static int currentFrame = 0;
@@ -30,44 +31,72 @@ public class GameEngine {
         shownEnemies = new ArrayList<>();
         dyingEnemies = new ArrayList<>();
         availableTowers = new ArrayList<>();
+        activeProjectiles = new ArrayList<>();
     }
 
     public void update() {
         currentFrame++;
         // move enemy
-        ListIterator<Enemy> i = shownEnemies.listIterator();
-        while(i.hasNext()) {
-            Enemy e = i.next();
-            Line leg = this.level.paths.get(e.path).get(e.leg);
+        {
+            ListIterator<Enemy> i = shownEnemies.listIterator();
+            while (i.hasNext()) {
+                Enemy e = i.next();
+                Line leg = this.level.paths.get(e.path).get(e.leg);
 
-            e.absPosX += (e.speed / FPS) * leg.getDirection().first;
-            e.absPosY += (e.speed / FPS) * leg.getDirection().second;
+                e.absPosX += (e.speed / FPS) * leg.getDirection().first;
+                e.absPosY += (e.speed / FPS) * leg.getDirection().second;
 
-            if ((e.absPosX * leg.getSigns().first > leg.getEnd().first * leg.getSigns().first) && (e.absPosY * leg.getSigns().second > leg.getEnd().second * leg.getSigns().second)) {
-                e.leg++;
+                if ((e.absPosX * leg.getSigns().first > leg.getEnd().first * leg.getSigns().first) && (e.absPosY * leg.getSigns().second > leg.getEnd().second * leg.getSigns().second)) {
+                    e.leg++;
 
-                if (e.leg >= this.level.paths.get(e.path).size()) {
-                    health--;
-                    e.posX = leg.getEnd().first;
-                    e.posY = leg.getEnd().second;
-                    e.deathAnimationCount = 0;
-                    dyingEnemies.add(e);
-                    i.remove();
-                    continue;
+                    if (e.leg >= this.level.paths.get(e.path).size()) {
+                        health--;
+                        e.posX = leg.getEnd().first;
+                        e.posY = leg.getEnd().second;
+                        e.deathAnimationCount = 0;
+                        dyingEnemies.add(e);
+                        i.remove();
+                        continue;
+                    }
+
+                    Double diff = Math.max((e.absPosX - leg.getEnd().first) / leg.getDirection().first, (e.absPosY - leg.getEnd().second) / leg.getDirection().second);
+                    leg = this.level.paths.get(e.path).get(e.leg);
+                    e.absPosX += diff * leg.getDirection().first;
+                    e.absPosY += diff * leg.getDirection().second;
                 }
 
-                Double diff = Math.max((e.absPosX - leg.getEnd().first) / leg.getDirection().first, (e.absPosY - leg.getEnd().second) / leg.getDirection().second);
-                leg = this.level.paths.get(e.path).get(e.leg);
-                e.absPosX += diff * leg.getDirection().first;
-                e.absPosY += diff * leg.getDirection().second;
+                e.posX = (int) Math.round(e.absPosX);
+                e.posY = (int) Math.round(e.absPosY);
             }
-
-            e.posX = (int)Math.round(e.absPosX);
-            e.posY = (int)Math.round(e.absPosY);
         }
 
         // towers attack
+        for (Tower t : this.placedTowers) {
+            
+        }
 
+        // projectile movement & collision detection
+        {
+            ListIterator<Projectile> i = activeProjectiles.listIterator();
+            while (i.hasNext()) {
+                Projectile p = i.next();
+                p.move();
+
+                if (p.isAuto()) {
+                    if (rectangleCollision(p.getAbsPosX(), p.getAbsPosY(), p.getProjSizeX(), p.getProjSizeY(), p.target.absPosX, p.target.absPosY, p.target.sizeX, p.target.sizeY)) {
+                        p.target.health -= p.tower.attackDamage[p.tower.level] - p.target.armor;
+                        i.remove();
+                    }
+                }
+            }
+        }
+    }
+
+    public boolean rectangleCollision(double Ax, double Ay, int Aw, int Ah, double Bx, double By, int Bw, int Bh) {
+        return  (Ax - Aw) < (Bx + Bw) &&
+                (Ax + Aw) > (Bx - Bw) &&
+                (Ay - Ah) < (By + Bh) &&
+                (Ay + Ah) > (By - Bh);
     }
 
     public void draw(JPanel panel, Graphics g) {

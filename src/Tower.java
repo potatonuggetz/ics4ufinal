@@ -2,25 +2,38 @@ import java.awt.*;
 import java.util.*;
 
 abstract public class Tower {
-    protected Image image;
-    protected int posX;
-    protected int posY;
+    // info
     protected String name;
     protected String description;
-    protected double[] attackDamage;
-    protected double[] abilityPower;
-    protected double[] attackSpeed; //attacks per second
-    protected double timeLastAttacked; //frame when last attacked
     protected int level; //level of the tower, increases with respect to time, maxes at 5
     protected int xp; //xp, used to calculate level
+
+    // attack
+    protected double[] attackDamage;
+    protected double[] attackSpeed; //attacks per second
+    protected double projectileSpeed;
+    protected double timeLastAttacked; //frame when last attacked
+
+    // ability
+    protected double[] abilityPower;
     protected ArrayList<Ability> towerAbilities = new ArrayList<Ability>();
     private static ArrayList<Tower> towerList = new ArrayList<Tower>();
 
-    public Tower(int x,int y,GameEngine g){
+    // visual
+    protected int posX;
+    protected int posY;
+    protected int sizeX;
+    protected int sizeY;
+    protected Image image;
+
+    protected int projSizeX;
+    protected int projSizeY;
+    protected Image projectile;
+
+    public Tower(int x,int y){
         posX=x;
         posY=y;
         towerList.add(this);
-        g.getPlacedTowers().add(this);
     }
 
     public String getName(){
@@ -51,8 +64,8 @@ abstract public class Tower {
         return attackSpeed[level];
     }
 
-    public double getCurrentAttackCooldown(GameEngine g){
-        return Math.max(0,(g.getFPS()/attackSpeed[level])-(g.getCurrentFrame()-timeLastAttacked));
+    public double getCurrentAttackCooldown(){
+        return Math.max(0,(GameEngine.getFPS()/attackSpeed[level])-(GameEngine.getCurrentFrame()-timeLastAttacked));
     }
 
     public int getLevel(){

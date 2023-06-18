@@ -13,6 +13,11 @@ abstract public class Tower {
     protected double[] attackSpeed; //attacks per second
     protected double projectileSpeed;
     protected double timeLastAttacked; //frame when last attacked
+    public static final int TARGETING_FIRST=0;
+    public static final int TARGETING_LAST=1;
+    public static final int TARGETING_STRONG=2;
+    protected int targeting;
+    protected int range;
 
     // ability
     protected double[] abilityPower;

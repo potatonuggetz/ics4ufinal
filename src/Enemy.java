@@ -1,7 +1,7 @@
 import java.util.ArrayList;
 import java.awt.*;
 
-abstract public class Enemy {
+abstract public class Enemy implements Comparable<Enemy>{
     protected String name;
     protected double health;
     protected double armor;
@@ -23,12 +23,18 @@ abstract public class Enemy {
     protected double speed;
     protected int path;
     protected int leg;
+    protected int distanceFromEnd;
 
     //TODO: crowd control
 
     public Enemy(){
         
         enemyList.add(this); 
+    }
+
+    //default sort is which enemy is further along the track
+    public int compareTo(Enemy e){
+        return e.distanceFromEnd-this.distanceFromEnd;
     }
 
     public String getName(){

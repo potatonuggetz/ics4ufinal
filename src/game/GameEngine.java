@@ -67,9 +67,9 @@ public class GameEngine {
            heartIcon = ImageIO.read(new File("img/ui/game_menu_hearticon.png"));
            goldIcon = ImageIO.read(new File("img/ui/game_menu_goldicon.png"));
 
-           deathAnimations = new Image[20];
-           for (int i = 0; i < 20; i++) {
-               deathAnimations[i] = ImageIO.read(new File("img/ui/boom/death" + i + ".png"));
+           deathAnimations = new Image[44];
+           for (int i = 0; i < 44; i++) {
+               deathAnimations[i] = ImageIO.read(new File("img/ui/boom/death" + (i+1) + ".png"));
            }
         } catch (IOException e) {
 
@@ -130,10 +130,6 @@ public class GameEngine {
 
                     if (e.leg >= this.level.paths.get(e.path).size()) {
                         health--;
-                        e.posX = leg.getEnd().first;
-                        e.posY = leg.getEnd().second;
-                        e.deathAnimationCount = 0;
-                        //dyingEnemies.add(e);
                         i.remove();
                         continue;
                     }
@@ -218,6 +214,9 @@ public class GameEngine {
                             t.level++;
                         }
                     }
+
+                    dyingEnemies.add(e);
+                    i.remove();
                 }
             }
         }
@@ -313,9 +312,12 @@ public class GameEngine {
         ListIterator<Enemy> i = dyingEnemies.listIterator();
         while (i.hasNext()) {
             Enemy e = i.next();
-            if (e.deathAnimationCount > 20) {
+            if (e.deathAnimationCount > 44) {
                 i.remove();
             }
+            AlphaComposite ac = AlphaComposite.getInstance(AlphaComposite.SRC_OVER,(float)((44.0 - e.deathAnimationCount) / 44.0));
+            g.drawImage(e.image, e.posX-e.sizeX, e.posY-e.sizeY, null);
+            ac = AlphaComposite.getInstance(AlphaComposite.SRC_OVER,1);
             g.drawImage(deathAnimations[e.deathAnimationCount], e.posX-e.sizeX, e.posY-e.sizeY, null);
             e.deathAnimationCount++;
         }

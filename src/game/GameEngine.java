@@ -213,7 +213,9 @@ public class GameEngine {
                 for(Enemy e:shownEnemies){
                     Line x=new Line(new Pair<>(t.posX,t.posY),new Pair<>(e.posX,e.posY));
                     if(x.getDistance()<=t.range){
-                        activeProjectiles.add(new Projectile(t, e));
+                        Projectile p=new Projectile(t, e);
+                        if(t.name.equals("Ashe")) p.hasSlow=true;
+                        activeProjectiles.add(p);
                         t.timeLastAttacked=currentFrame;
                         break;
                     }
@@ -248,9 +250,7 @@ public class GameEngine {
                             } else{
                                 e.health-=(((p.tower.currentAttackDamage*p.ability.scalingAD)+(p.tower.currentAbilityPower*p.ability.scalingAP))-(e.armor));
                             }
-                            if(p.hasSlow){
-                                tempEvents.add(new TemporaryEvent(e,p.ability));
-                            }
+                            tempEvents.add(new TemporaryEvent(e,p.ability));
                             j.remove();
                             p.ability.pierce--;
                             if(p.ability.pierce<=0) i.remove();

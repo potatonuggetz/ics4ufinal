@@ -6,8 +6,8 @@ public class VeigarQ extends Ability{
         name="Baleful Strike";
         description="Veigar blasts a dark bolt in the target direction that deals magic damage to the first two enemies hit.";
         cooldown=new double[]{1000,6,5.5,5,4.5,4};
-        projSizeX=30;
-        projSizeY=30;
+        projSizeX=15;
+        projSizeY=15;
         range=150;
         magicDamage=true;
         scalingAD=0;

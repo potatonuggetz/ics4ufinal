@@ -66,7 +66,9 @@ public class Level {
                 int spawnTime = Integer.parseInt(st.nextToken());
                 String enemyName = st.nextToken();
                 int path = Integer.parseInt(st.nextToken());
-                q.add(matchEnemy(enemyName, spawnTime, path));
+                Enemy e=matchEnemy(enemyName, spawnTime, path);
+                e.currentSpeed=e.speed;
+                q.add(e);
             }
             try {
                 this.background = ImageIO.read(new File(br.readLine()));

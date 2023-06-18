@@ -20,18 +20,38 @@ public class Level {
             return;
         }
 
-        //
-        enemies = new LinkedList<Queue<Enemy>>();
+        // i make the file format so no error checking needed 8)
+        enemies = new LinkedList<>();
+        paths = new ArrayList<>();
         String line;
         try {
-            if (!br.readLine().equals(":Enemies")) {
+            if (!br.readLine().equals(":Paths")) {
                 System.out.println("invalid format");
                 return;
             }
-            while (!(line = br.readLine()).equals(":Paths")) {
-                Queue<Enemy> q = null;
+            Pair<Integer, Integer> lastPoint = null;
+            ArrayList<Line> p = new ArrayList<>();
+            while (!(line = br.readLine()).equals(":Enemies")) {
                 if (line.startsWith("-")) {
-                    if (q != null) enemies.add(q);
+                    if (p.size() != 0) {
+                        paths.add(p);
+                    }
+                    lastPoint = null;
+                    p = new ArrayList<>();
+                    continue;
+                }
+                if (lastPoint == null) {
+                    lastPoint = new Pair<>(Integer.parseInt(line.split(",")[0]), Integer.parseInt(line.split(",")[1]));
+                } else {
+                    Pair<Integer, Integer> newPoint = new Pair<>(Integer.parseInt(line.split(",")[0]), Integer.parseInt(line.split(",")[1]));
+                    p.add(new Line(lastPoint, newPoint));
+                    lastPoint = newPoint;
+                }
+            }
+            Queue<Enemy> q = new LinkedList<>();;
+            while (!(line = br.readLine()).equals(":Background")) {
+                if (line.startsWith("-")) {
+                    if (!q.isEmpty()) enemies.add(q);
                     q = new LinkedList<>();
                     continue;
                 }
@@ -39,33 +59,21 @@ public class Level {
                 int spawnTime = Integer.parseInt(st.nextToken());
                 String enemyName = st.nextToken();
                 int path = Integer.parseInt(st.nextToken());
+                q.add(matchEnemy(enemyName, spawnTime, path));
+            }
+            try {
+                this.background = ImageIO.read(new File(br.readLine()));
+            } catch (IOException e) {
+                e.printStackTrace();
             }
             br.close();
         } catch (IOException e) {
 
         }
-
-
-
-
-
-        paths = new ArrayList<>();
-
-
-        //enemies.add(new Boccher());
-
-
-        paths.add(new ArrayList<>());
-        paths.get(0).add(new Line(new Pair<>(100, 500), new Pair<>(500, 500)));
-
-        try {
-            this.background = ImageIO.read(new File("shark.jpg"));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
-    private Enemy matchEnemy(String s) {
+    private Enemy matchEnemy(String s, int spawnTime, int path) {
+        if (s.equals("Boccher")) return new Boccher(spawnTime, path, paths.get(path).get(0).getStart().first, paths.get(path).get(0).getStart().second);
         return null;
     }
 }

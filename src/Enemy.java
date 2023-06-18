@@ -27,9 +27,14 @@ abstract public class Enemy {
 
     //TODO: crowd control
 
-    public Enemy(int spawnTime, int path){
+    public Enemy(int spawnTime, int path, int startX, int startY){
         this.spawnTime = spawnTime;
         this.path = path;
+        this.posX = startX;
+        this.absPosX = startX;
+        this.posY = startY;
+        this.absPosY = startY;
+        leg = 0;
         enemyList.add(this); 
     }
 

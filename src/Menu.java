@@ -127,7 +127,11 @@ public class Menu extends JPanel implements MouseListener, KeyListener, Runnable
     }
 
     public void keyPressed(KeyEvent e) {
-
+        if (currentMenu == MENU_GAME) {
+            if (e.getKeyCode() == KeyEvent.VK_SPACE) {
+                engine.startWave();
+            }
+        }
     }
 
     public void keyReleased(KeyEvent e) {

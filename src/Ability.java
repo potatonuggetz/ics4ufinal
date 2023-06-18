@@ -26,8 +26,8 @@ abstract class Ability {
         return cooldown[tower.getLevel()];
     }
 
-    public double getCurrentCooldown(GameEngine g){
+    public double getCurrentCooldown(){
         //returns either 0 or the cooldown length remaining in frames
-        return Math.max(0,(cooldown[tower.getLevel()]*g.getFPS())-(g.getCurrentFrame()-timeLastUsed));
+        return Math.max(0,(cooldown[tower.getLevel()]*GameEngine.getFPS())-(GameEngine.getCurrentFrame()-timeLastUsed));
     }
 }

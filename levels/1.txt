@@ -20,9 +20,9 @@
 :Enemies
 =1
 2000,Boccher,0
-2000,Boccher,0
-2000,Boccher,0
-2000,Boccher,0
+2000,Bocchisaur,0
+2000,DyingBocchi,0
+2000,TracksuitGotoh,0
 2000,Boccher,0
 2000,Boccher,0
 =2

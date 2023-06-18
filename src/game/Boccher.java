@@ -1,3 +1,5 @@
+package game;
+
 import javax.imageio.*;
 import java.io.*;
 

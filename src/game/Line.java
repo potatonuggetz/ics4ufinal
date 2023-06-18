@@ -12,7 +12,7 @@ public class Line {
 
         // get unit vector for direction
         Pair<Double, Double> d = new Pair<>(end.first - start.first + 0.0, end.second - start.second + 0.0);
-        distance = Math.sqrt ( ( (end.first - start.first + 0.0) * (end.first - start.first + 0.0) ) + ( (end.second - start.second + 0.0) * (end.first - start.first + 0.0) ) );
+        distance = Math.sqrt ( ( (end.first - start.first + 0.0) * (end.first - start.first + 0.0) ) + ( (end.second - start.second + 0.0) * (end.second - start.second + 0.0) ) );
         this.direction = new Pair<>(d.first / distance, d.second / distance);
 
         // get signs for direction

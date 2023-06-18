@@ -62,9 +62,9 @@ public class Projectile {
         path = new Line(new Pair<>(tower.posX,tower.posY), new Pair<>(target.posX,target.posY));
     }
 
-    public void move() {
-        absPosX += (tower.projectileSpeed / GameEngine.getFPS()) * path.getDirection().first;
-        absPosY += (tower.projectileSpeed / GameEngine.getFPS()) * path.getDirection().second;
+    public void move(int lag) {
+        absPosX += (tower.projectileSpeed * (lag * 0.001)) * path.getDirection().first;
+        absPosY += (tower.projectileSpeed * (lag * 0.001)) * path.getDirection().second;
         if (auto) path = new Line(new Pair<>(tower.posX,tower.posY), new Pair<>(target.posX,target.posY));
 
         posX = (int)Math.round(absPosX);

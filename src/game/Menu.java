@@ -9,9 +9,10 @@ public class Menu extends JPanel implements MouseListener, KeyListener, Runnable
     public static final int MENU_GAME = 2;
     public static final int MENU_CREDITS = 3;
     public static final int MENU_GAME_RESULTS = 4;
-    public int currentMenu = 0;
+    public int currentMenu = 2; // temp
 
     GameEngine engine;
+    long lastTime;
 
     public Menu(JFrame frame) {
         super();
@@ -23,11 +24,13 @@ public class Menu extends JPanel implements MouseListener, KeyListener, Runnable
         addMouseWheelListener(this);
         frame.addWindowListener(this);
 
+        startGame(); // temp
         new Thread(this).start();
     }
 
     public void startGame() {
-
+        engine = new GameEngine(new Level("test")); // temp
+        lastTime = 0;
     }
 
     public void paintComponent(Graphics g) {
@@ -61,7 +64,9 @@ public class Menu extends JPanel implements MouseListener, KeyListener, Runnable
     public void drawGame(Graphics g) {
         Graphics2D g2d = (Graphics2D) g;
 
-        engine.update();
+        long currTime = System.currentTimeMillis();
+        engine.update(currTime - lastTime);
+        lastTime = currTime;
         engine.draw(this, g);
     }
 
@@ -122,7 +127,11 @@ public class Menu extends JPanel implements MouseListener, KeyListener, Runnable
     }
 
     public void keyPressed(KeyEvent e) {
-
+        if (currentMenu == MENU_GAME) {
+            if (e.getKeyCode() == KeyEvent.VK_SPACE) {
+                engine.startWave();
+            }
+        }
     }
 
     public void keyReleased(KeyEvent e) {

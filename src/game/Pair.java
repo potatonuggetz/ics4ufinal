@@ -18,4 +18,8 @@ public class Pair <U, V> {
         Pair<?, ?> p = (Pair<?, ?>) o;
         return p.first.equals(this.first) && p.second.equals(this.second);
     }
+
+    public String toString() {
+        return this.first.toString() + "," + this.second.toString();
+    }
 }

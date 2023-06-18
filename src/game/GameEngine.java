@@ -419,4 +419,8 @@ public class GameEngine {
     public void addProjectile(Projectile p){
         activeProjectiles.add(p);
     }
+
+    public void addBuff(TemporaryEvent e){
+        tempEvents.add(e);
+    }
 }

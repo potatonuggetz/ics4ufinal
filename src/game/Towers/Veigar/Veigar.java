@@ -1,4 +1,9 @@
 package game.Towers.Veigar;
+import java.io.File;
+import java.io.IOException;
+
+import javax.imageio.ImageIO;
+
 import game.*;
 
 public class Veigar extends Tower{
@@ -11,5 +16,10 @@ public class Veigar extends Tower{
         attackSpeed=new double[]{0,0.3,0.35,0.4,0.45,0.5};
         projectileSpeed=20;
         range=100;
+        try {
+            this.image = ImageIO.read(new File("veigar.png"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

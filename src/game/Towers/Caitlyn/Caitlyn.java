@@ -1,4 +1,9 @@
 package game.Towers.Caitlyn;
+import java.io.File;
+import java.io.IOException;
+
+import javax.imageio.ImageIO;
+
 import game.*;
 
 public class Caitlyn extends Tower{
@@ -11,5 +16,10 @@ public class Caitlyn extends Tower{
         attackSpeed=new double[]{0,0.6,0.7,0.9,1.2,1.5};
         projectileSpeed=75;
         range=200;
+        try {
+            this.image = ImageIO.read(new File("caitlyn.png"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

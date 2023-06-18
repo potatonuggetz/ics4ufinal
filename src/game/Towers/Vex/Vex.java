@@ -1,4 +1,9 @@
 package game.Towers.Vex;
+import java.io.File;
+import java.io.IOException;
+
+import javax.imageio.ImageIO;
+
 import game.*;
 
 public class Vex extends Tower{
@@ -11,5 +16,10 @@ public class Vex extends Tower{
         attackSpeed=new double[]{0,0.6,0.7,0.8,0.9,1.0};
         projectileSpeed=75;
         range=100;
+        try {
+            this.image = ImageIO.read(new File("vex.png"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

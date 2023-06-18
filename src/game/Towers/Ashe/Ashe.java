@@ -1,4 +1,9 @@
 package game.Towers.Ashe;
+import java.io.File;
+import java.io.IOException;
+
+import javax.imageio.ImageIO;
+
 import game.*;
 
 public class Ashe extends Tower{
@@ -11,5 +16,10 @@ public class Ashe extends Tower{
         attackSpeed=new double[]{0,0.6,0.8,1.3,1.9,3};
         projectileSpeed=125;
         range=150;
+        try {
+            this.image = ImageIO.read(new File("ashe.png"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

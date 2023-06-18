@@ -1,4 +1,9 @@
 package game.Towers.Ezreal;
+import java.io.File;
+import java.io.IOException;
+
+import javax.imageio.ImageIO;
+
 import game.*;
 
 public class Ezreal extends Tower{
@@ -11,5 +16,10 @@ public class Ezreal extends Tower{
         attackSpeed=new double[]{0,0.8,0.9,1.3,1.7,2};
         projectileSpeed=75;
         range=150;
+        try {
+            this.image = ImageIO.read(new File("ezreal.png"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

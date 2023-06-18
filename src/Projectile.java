@@ -9,11 +9,11 @@ public class Projectile {
     Enemy target;
 
     // visual
-    private int posX;
-    private int posY;
-    private final int projSizeX;
-    private final int projSizeY;
-    private final Image projectile;
+    protected int posX;
+    protected int posY;
+    protected final int projSizeX;
+    protected final int projSizeY;
+    protected final Image projectile;
 
     // movement
     private double absPosX;

@@ -119,7 +119,10 @@ public class GameEngine {
             g.drawImage(e.image, e.posX-e.sizeX, e.posY-e.sizeY, null);
         }
         for (Tower t : this.placedTowers) {
-            g.drawImage(t.image, t.posX, t.posY, null);
+            g.drawImage(t.image, t.posX-t.sizeX, t.posY-t.sizeY, null);
+        }
+        for (Projectile p : this.activeProjectiles) {
+            g.drawImage(p.projectile, p.posX-p.projSizeX, p.posY-p.projSizeY, null);
         }
     }
 

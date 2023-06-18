@@ -16,6 +16,7 @@ public class Veigar extends Tower{
         attackSpeed=new double[]{0,0.3,0.35,0.4,0.45,0.5};
         projectileSpeed=20;
         range=100;
+        towerAbilities.add(new VeigarQ(this));
         try {
             this.image = ImageIO.read(new File("img/tower/veigar.png"));
         } catch (IOException e) {

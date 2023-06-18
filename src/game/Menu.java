@@ -29,7 +29,7 @@ public class Menu extends JPanel implements MouseListener, KeyListener, Runnable
     }
 
     public void startGame() {
-        engine = new GameEngine(new Level("levels/8.txt")); // temp
+        engine = new GameEngine(new Level("levels/1.txt")); // temp
         lastTime = 0; // ૮•.•ა
     }
 

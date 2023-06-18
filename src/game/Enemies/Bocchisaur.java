@@ -11,7 +11,7 @@ public class Bocchisaur extends Enemy {
     public Bocchisaur(int spawnTime, int path, int startX, int startY) {
         super(spawnTime, path, startX, startY);
         try {
-            this.image = ImageIO.read(new File("img/enemy/boccher.png"));
+            this.image = ImageIO.read(new File("img/enemy/bocchersaur.png"));
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -1,0 +1,8 @@
+:Paths
+=1
+=
+:Enemies
+=1
+=
+:Background
+img/bg/

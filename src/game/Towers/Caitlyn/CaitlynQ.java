@@ -6,8 +6,8 @@ public class CaitlynQ extends Ability{
         name="Piltover Peacemaker";
         description="Caitlyn fires a piercing shot in the target direction that deals physical damage to all enemies it passes through";
         cooldown=new double[]{1000,10,9,8,7,6};
-        projSizeX=25;
-        projSizeY=25;
+        projSizeX=50;
+        projSizeY=50;
         range=500;
         magicDamage=false;
         scalingAD=3.5;

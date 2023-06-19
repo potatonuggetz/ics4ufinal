@@ -19,8 +19,10 @@ public class Menu extends JPanel implements MouseListener, MouseMotionListener, 
 
     GameEngine engine;
     long lastTime;
+    Font bruhfont;
 
     private int levelSelectPage = 1;
+    private int instructionsPage = 1;
 
     // images
     Map<String, Image> mmImages;
@@ -45,6 +47,8 @@ public class Menu extends JPanel implements MouseListener, MouseMotionListener, 
         inImages = new HashMap<>();
         abImages = new HashMap<>();
         grImages = new HashMap<>();
+
+        bruhfont = new Font("Calibri", Font.PLAIN, 35);
 
         // import images
         try {
@@ -75,6 +79,16 @@ public class Menu extends JPanel implements MouseListener, MouseMotionListener, 
             inImages.put("logo", ImageIO.read(new File("img/ui/instructions_logo.png")));
             inImages.put("backbutton", ImageIO.read(new File("img/ui/instructions_backbutton.png")));
             inImages.put("backbuttonhover", ImageIO.read(new File("img/ui/instructions_backbuttonhover.png")));
+            inImages.put("1", ImageIO.read(new File("img/ui/instructions_1.png")));
+            inImages.put("2", ImageIO.read(new File("img/ui/instructions_2.png")));
+            inImages.put("3", ImageIO.read(new File("img/ui/instructions_3.png")));
+            inImages.put("ability", ImageIO.read(new File("img/ui/instructions_ability.png")));
+            inImages.put("boccher", ImageIO.read(new File("img/ui/instructions_boccher.png")));
+            inImages.put("drag", ImageIO.read(new File("img/ui/instructions_drag.png")));
+            inImages.put("gold", ImageIO.read(new File("img/ui/instructions_gold.png")));
+            inImages.put("health", ImageIO.read(new File("img/ui/instructions_health.png")));
+            inImages.put("wave", ImageIO.read(new File("img/ui/instructions_wave.png")));
+            inImages.put("xp", ImageIO.read(new File("img/ui/instructions_xp.png")));
 
             abImages.put("bg", ImageIO.read(new File("img/bg/about.jpg")));
             abImages.put("logo", ImageIO.read(new File("img/ui/about_logo.png")));
@@ -190,9 +204,57 @@ public class Menu extends JPanel implements MouseListener, MouseMotionListener, 
         Graphics2D g2d = (Graphics2D) g;
         g.drawImage(inImages.get("bg"), 0, 0, null);
         g.drawImage(inImages.get("logo"), 316, 30, null);
-        
-
         drawButton(g2d, inImages.get("backbutton"), inImages.get("backbuttonhover"), 15, 15, 90, 90);
+        g.setColor(new Color(0, 0, 0, 127));
+        g.fillRect(200, 320, 880, 320);
+
+        g.setColor(new Color(255,255,255));
+        if (instructionsPage == 1) {
+            drawCenteredString(g, "Bocchi Tower Defense is a tower defense game, where the", new Rectangle(200, 330, 880, 45), bruhfont, 0, 0);
+            drawCenteredString(g, "objective is to stop enemies from reaching the endzone.", new Rectangle(200, 375, 880, 45), bruhfont, 0, 0);
+            drawButton(g2d, lsImages.get("rightmenu"), lsImages.get("rightmenuhover"), 1100, 442, 160, 75);
+            g.drawImage(inImages.get("boccher"), 552,466, null);
+        } else if (instructionsPage == 2) {
+            drawCenteredString(g, "Enemies come in waves. To start a wave, press the wave", new Rectangle(200, 330, 880, 45), bruhfont, 0, 0);
+            drawCenteredString(g, "button. You win when you have reached the last wave", new Rectangle(200, 375, 880, 45), bruhfont, 0, 0);
+            drawCenteredString(g, "without your health dropping to 0.", new Rectangle(200, 420, 880, 45), bruhfont, 0, 0);
+            drawButton(g2d, lsImages.get("leftmenu"), lsImages.get("leftmenuhover"), 20, 442, 160, 75);
+            drawButton(g2d, lsImages.get("rightmenu"), lsImages.get("rightmenuhover"), 1100, 442, 160, 75);
+            g.drawImage(inImages.get("wave"), 370, 482, null);
+            g.drawImage(inImages.get("health"), 740, 482, null);
+        } else if (instructionsPage == 3) {
+            drawCenteredString(g, "To stop enemies, you have to kill them using towers.", new Rectangle(200, 330, 880, 45), bruhfont, 0, 0);
+            drawCenteredString(g, "Towers can be placed by dragging the icon from the", new Rectangle(200, 375, 880, 45), bruhfont, 0, 0);
+            drawCenteredString(g, "bottom right into the playfield.", new Rectangle(200, 420, 880, 45), bruhfont, 0, 0);
+            drawButton(g2d, lsImages.get("leftmenu"), lsImages.get("leftmenuhover"), 20, 442, 160, 75);
+            drawButton(g2d, lsImages.get("rightmenu"), lsImages.get("rightmenuhover"), 1100, 442, 160, 75);
+            g.drawImage(inImages.get("drag"), 445, 480, null);
+        } else if (instructionsPage == 4) {
+            drawCenteredString(g, "Towers cost gold, so make sure you", new Rectangle(200, 330, 880, 45), bruhfont, 0, 0);
+            drawCenteredString(g, "have enough gold to place one.", new Rectangle(200, 375, 880, 45), bruhfont, 0, 0);
+            drawButton(g2d, lsImages.get("leftmenu"), lsImages.get("leftmenuhover"), 20, 442, 160, 75);
+            drawButton(g2d, lsImages.get("rightmenu"), lsImages.get("rightmenuhover"), 1100, 442, 160, 75);
+            g.drawImage(inImages.get("gold"), 555, 460, null);
+        } else if (instructionsPage == 5) {
+            drawCenteredString(g, "Towers gain XP when they kill enemies,", new Rectangle(200, 330, 880, 45), bruhfont, 0, 0);
+            drawCenteredString(g, "which allows them to level up and do more damage.", new Rectangle(200, 375, 880, 45), bruhfont, 0, 0);
+            drawButton(g2d, lsImages.get("leftmenu"), lsImages.get("leftmenuhover"), 20, 442, 160, 75);
+            drawButton(g2d, lsImages.get("rightmenu"), lsImages.get("rightmenuhover"), 1100, 442, 160, 75);
+            g.drawImage(inImages.get("xp"), 492, 430, null);
+        } else if (instructionsPage == 6) {
+            drawCenteredString(g, "Towers also have abilities that can", new Rectangle(200, 330, 880, 45), bruhfont, 0, 0);
+            drawCenteredString(g, "be activated by clicking on the tower.", new Rectangle(200, 375, 880, 45), bruhfont, 0, 0);
+            drawButton(g2d, lsImages.get("leftmenu"), lsImages.get("leftmenuhover"), 20, 442, 160, 75);
+            drawButton(g2d, lsImages.get("rightmenu"), lsImages.get("rightmenuhover"), 1100, 442, 160, 75);
+            g.drawImage(inImages.get("ability"), 448, 434, null);
+        } else if (instructionsPage == 7) {
+            drawCenteredString(g, "Each tower has different abilities and attributes", new Rectangle(200, 330, 880, 45), bruhfont, 0, 0);
+            drawCenteredString(g, "that counter different enemies. Be strategic!", new Rectangle(200, 375, 880, 45), bruhfont, 0, 0);
+            drawButton(g2d, lsImages.get("leftmenu"), lsImages.get("leftmenuhover"), 20, 442, 160, 75);
+            g.drawImage(inImages.get("3"), 550, 430, null);
+            g.drawImage(inImages.get("1"), 314, 420, null);
+            g.drawImage(inImages.get("2"), 800, 420, null);
+        }
     }
 
     public void drawAbout(Graphics g) {
@@ -325,9 +387,10 @@ public class Menu extends JPanel implements MouseListener, MouseMotionListener, 
             }
         } else if (currentMenu == MENU_MAIN) {
             if (inRectangle(e, 375, 906, 336,  434)) {
-                currentMenu = MENU_LEVEL_SELECT;
                 levelSelectPage = 1;
+                currentMenu = MENU_LEVEL_SELECT;
             } else if (inRectangle(e, 375, 906, 451,  549)) {
+                instructionsPage = 1;
                 currentMenu = MENU_INSTRUCTIONS;
             } else if (inRectangle(e, 375, 906, 566,  664)) {
                 currentMenu = MENU_CREDITS;
@@ -375,6 +438,14 @@ public class Menu extends JPanel implements MouseListener, MouseMotionListener, 
         } else if (currentMenu == MENU_INSTRUCTIONS) {
             if (inRectangle(e, 15, 105, 15,  105)) {
                 currentMenu = MENU_MAIN;
+            } else if (instructionsPage == 1 && inRectangle(e, 1100, 1100+160, 442, 442+75)) {
+                instructionsPage = 2;
+            } else if (instructionsPage == 7 && inRectangle(e, 20, 180, 442, 442+75)) {
+                instructionsPage = 6;
+            } else if (instructionsPage <= 6 && instructionsPage >= 2 && inRectangle(e, 20, 180, 442, 442+75)) {
+                instructionsPage--;
+            } else if (instructionsPage <= 6 && instructionsPage >= 2 && inRectangle(e, 1100, 1100+160, 442, 442+75)) {
+                instructionsPage++;
             }
         } else if (currentMenu == MENU_CREDITS) {
             if (inRectangle(e, 15, 105, 15,  105)) {

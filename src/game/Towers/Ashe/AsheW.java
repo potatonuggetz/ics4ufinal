@@ -9,7 +9,8 @@ public class AsheW extends Ability{
     public AsheW(Tower t){
         super(t);
         name="Volley";
-        description="Ashe shoots a volley of arrows in a cone in the target direction, each dealing physical damage to the first enemy hit.";
+        description="Ashe shoots a volley of arrows in a cone in the target direction, each dealing";
+        description2="physical damage to the first enemy hit.";
         cooldown=new double[]{1000,8,7,6,5,4};
         projSizeX=2;
         projSizeY=2;

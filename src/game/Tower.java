@@ -8,6 +8,7 @@ abstract public class Tower {
     protected String description;
     protected int level=1; //level of the tower, increases with respect to time, maxes at 5
     protected int xp; //xp, used to calculate level
+    protected int gold;
 
     // attack
     protected double currentAttackDamage;

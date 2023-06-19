@@ -23,6 +23,7 @@ public class Ashe extends Tower{
         currentAttackSpeed=attackSpeed[level];
         sizeX=44;
         sizeY=50;
+        gold=100;
         towerAbilities.add(new AsheW(this));
         try {
             this.image = ImageIO.read(new File("img/tower/ashe.png"));

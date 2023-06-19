@@ -295,11 +295,12 @@ public class GameEngine {
                 if(e.health<=0){
                     for(Tower t:placedTowers){
                         Line l=new Line(new Pair<>(e.posX,e.posY),new Pair<>(e.posX,e.posY));
-                        if(l.getDistance()<=250) t.xp+=10;
+                        if(l.getDistance()<=500) t.xp+=10;
                         if(t.xp>=100&&t.level<5) {
                             t.levelUp();
                         }
                     }
+                    gold+=5;
 
 
                     dyingEnemies.add(e);
@@ -371,18 +372,26 @@ public class GameEngine {
         g.drawImage(waveIcon, 342 + ((170 - (10+waveIcon.getWidth(null)+metrics.stringWidth(String.valueOf(wave)))) / 2), 644, null);
         g.drawString(String.valueOf(wave), (342 + ((170 - (10+waveIcon.getWidth(null)+metrics.stringWidth(String.valueOf(wave)))) / 2)) + waveIcon.getWidth(null)+5, 644 + metrics.getAscent());
 
+        g.setColor(new Color(255, 255, 0));
+        g.setFont(new Font("Calibri",1,18));
         menu.drawButton(g2d, towerframe, towerframeSelected, 256*2, 600, 128, 120);
         g.drawImage(ashe, 256*2, 600, 128, 120,null);
+        g.drawString("$100",256*2+20,630);
         menu.drawButton(g2d, towerframe, towerframeSelected, 256*2+128, 600, 128, 120);
         g.drawImage(caitlyn, 256*2+128, 600, 128, 120,null);
+        g.drawString("$100",256*2+128+20,630);
         menu.drawButton(g2d, towerframe, towerframeSelected, 256*3, 600, 128, 120);
         g.drawImage(ezreal, 256*3, 600, 128, 120,null);
+        g.drawString("$150",256*3+20,630);
         menu.drawButton(g2d, towerframe, towerframeSelected, 256*3+128, 600, 128, 120);
         g.drawImage(lulu, 256*3+128, 600, 128, 120,null);
+        g.drawString("$200",256*3+128+20,630);
         menu.drawButton(g2d, towerframe, towerframeSelected, 256*4, 600, 128, 120);
         g.drawImage(veigar, 256*4, 600, 128, 120,null);
+        g.drawString("$200",256*4+20,630);
         menu.drawButton(g2d, towerframe, towerframeSelected, 256*4+128, 600, 128, 120);
         g.drawImage(vex, 256*4+128, 600, 128, 120,null);
+        g.drawString("$250",256*4+128+20,630);
     }
 
     /*
@@ -414,7 +423,8 @@ public class GameEngine {
 
     public void drawHoveredTower(Graphics g){
         g.drawImage(hoveredTower.image,mouseX-hoveredTower.sizeX,mouseY-hoveredTower.sizeY,null);
-        g.setColor(new Color(0,0,0,127));
+        if(gold>=hoveredTower.gold) g.setColor(new Color(0,0,0,127));
+        else g.setColor(new Color(255,0,0,127));
         g.fillOval(mouseX-hoveredTower.range,mouseY-hoveredTower.range,hoveredTower.range*2,hoveredTower.range*2);
     }
 
@@ -503,12 +513,30 @@ public class GameEngine {
     public void mouseReleased(MouseEvent e) {
         if(placingTower){
             if(inRectangle(e, 0, 1280, 0, 600)){
-                if(hoveredTower.name.equals("Ashe")) placedTowers.add(new Ashe(e.getX(),e.getY()));
-                if(hoveredTower.name.equals("Caitlyn")) placedTowers.add(new Caitlyn(e.getX(),e.getY()));
-                if(hoveredTower.name.equals("Ezreal")) placedTowers.add(new Ezreal(e.getX(),e.getY()));
-                if(hoveredTower.name.equals("Lulu")) placedTowers.add(new Lulu(e.getX(),e.getY()));
-                if(hoveredTower.name.equals("Veigar")) placedTowers.add(new Veigar(e.getX(),e.getY()));
-                if(hoveredTower.name.equals("Vex")) placedTowers.add(new Vex(e.getX(),e.getY()));
+                if(hoveredTower.name.equals("Ashe")&&gold>=hoveredTower.gold) {
+                    placedTowers.add(new Ashe(e.getX(),e.getY()));
+                    gold-=hoveredTower.gold;
+                }
+                if(hoveredTower.name.equals("Caitlyn")&&gold>=hoveredTower.gold) {
+                    placedTowers.add(new Caitlyn(e.getX(),e.getY()));
+                    gold-=hoveredTower.gold;
+                }
+                if(hoveredTower.name.equals("Ezreal")&&gold>=hoveredTower.gold) {
+                    placedTowers.add(new Ezreal(e.getX(),e.getY()));
+                    gold-=hoveredTower.gold;
+                }
+                if(hoveredTower.name.equals("Lulu")&&gold>=hoveredTower.gold) {
+                    placedTowers.add(new Lulu(e.getX(),e.getY()));
+                    gold-=hoveredTower.gold;
+                }
+                if(hoveredTower.name.equals("Veigar")&&gold>=hoveredTower.gold) {
+                    placedTowers.add(new Veigar(e.getX(),e.getY()));
+                    gold-=hoveredTower.gold;
+                }
+                if(hoveredTower.name.equals("Vex")&&gold>=hoveredTower.gold) {
+                    placedTowers.add(new Vex(e.getX(),e.getY()));
+                    gold-=hoveredTower.gold;
+                }
             }
             placingTower=false;
         }

@@ -21,6 +21,7 @@ public class Vex extends Tower{
         currentAttackSpeed=attackSpeed[level];
         sizeX=37;
         sizeY=50;
+        gold=250;
         towerAbilities.add(new VexQ(this));
         try {
             this.image = ImageIO.read(new File("img/tower/vex.png"));

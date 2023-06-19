@@ -21,6 +21,7 @@ public class Ezreal extends Tower{
         currentAttackSpeed=attackSpeed[level];
         sizeX=25;
         sizeY=50;
+        gold=150;
         towerAbilities.add(new EzrealQ(this));
         try {
             this.image = ImageIO.read(new File("img/tower/ezreal.png"));

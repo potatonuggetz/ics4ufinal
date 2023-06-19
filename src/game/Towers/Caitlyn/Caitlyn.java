@@ -11,7 +11,7 @@ public class Caitlyn extends Tower{
         super(x,y);
         name="Caitlyn";
         description="The Sheriff of Piltover";
-        attackDamage=new double[]{0,10,20,40,70,100};
+        attackDamage=new double[]{0,10,30,50,70,100};
         abilityPower=new double[]{0,0,0,0,0,0};
         attackSpeed=new double[]{0,0.6,0.7,0.9,1.2,1.5};
         projectileSpeed=600;
@@ -23,6 +23,7 @@ public class Caitlyn extends Tower{
         currentAttackSpeed=attackSpeed[level];
         sizeX=41;
         sizeY=50;
+        gold=100;
         towerAbilities.add(new CaitlynQ(this));
         try {
             this.image = ImageIO.read(new File("img/tower/caitlyn.png"));

@@ -19,7 +19,7 @@ public class NijikaIjichi extends Enemy {
         name = "Nijika Ijichi";
         health = 180;
         armor = 20;
-        magicResist = 40;
+        magicResist = 70;
         speed = 300;
         sizeX = 36;
         sizeY = 51;

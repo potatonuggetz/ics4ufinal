@@ -19,7 +19,7 @@ public class SlugBocchi extends Enemy {
         name = "Slug Bocchi";
         health = 400;
         armor = 50;
-        magicResist = 150;
+        magicResist = 90;
         speed = 60;
         sizeX = 68;
         sizeY = 30;

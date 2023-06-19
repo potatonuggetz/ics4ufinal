@@ -1,7 +1,12 @@
 package game;
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.File;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Menu extends JPanel implements MouseListener, KeyListener, Runnable, MouseWheelListener, WindowListener {
     public static final int MENU_MAIN = 0;
@@ -9,10 +14,14 @@ public class Menu extends JPanel implements MouseListener, KeyListener, Runnable
     public static final int MENU_GAME = 2;
     public static final int MENU_CREDITS = 3;
     public static final int MENU_GAME_RESULTS = 4;
-    public int currentMenu = 2; // temp
+    public static final int MENU_INSTRUCTIONS = 5;
+    public int currentMenu = 0; // temp
 
     GameEngine engine;
     long lastTime;
+
+    // images
+    Map<String, Image> mmImages;
 
     public Menu(JFrame frame) {
         super();
@@ -24,7 +33,23 @@ public class Menu extends JPanel implements MouseListener, KeyListener, Runnable
         addMouseWheelListener(this);
         frame.addWindowListener(this);
 
-        startGame(); // temp
+        mmImages = new HashMap<>();
+
+        // import images
+        try {
+            mmImages.put("bg", ImageIO.read(new File("img/bg/mainmenu.jpg")));
+            mmImages.put("logo", ImageIO.read(new File("img/ui/main_menu_logo.png")));
+            mmImages.put("play", ImageIO.read(new File("img/ui/main_menu_playbutton.png")));
+            mmImages.put("playhover", ImageIO.read(new File("img/ui/main_menu_playbuttonhover.png")));
+            mmImages.put("instr", ImageIO.read(new File("img/ui/main_menu_instructionsbutton.png")));
+            mmImages.put("instrhover", ImageIO.read(new File("img/ui/main_menu_instructionsbuttonhover.png")));
+            mmImages.put("about", ImageIO.read(new File("img/ui/main_menu_aboutbutton.png")));
+            mmImages.put("abouthover", ImageIO.read(new File("img/ui/main_menu_aboutbuttonhover.png")));
+        } catch (IOException e) {
+
+        }
+
+        //startGame(); // temp
         new Thread(this).start();
     }
 
@@ -43,7 +68,9 @@ public class Menu extends JPanel implements MouseListener, KeyListener, Runnable
             drawGame(g);
         } else if (currentMenu == MENU_GAME_RESULTS) {
             drawGameResults(g);
-        } else if (currentMenu == MENU_CREDITS){
+        } else if (currentMenu == MENU_CREDITS) {
+            drawAbout(g);
+        } else if (currentMenu == MENU_INSTRUCTIONS) {
             drawInstructions(g);
         } else {
             throw new RuntimeException("Invalid menu");
@@ -52,9 +79,11 @@ public class Menu extends JPanel implements MouseListener, KeyListener, Runnable
 
     public void drawMainMenu(Graphics g) {
         Graphics2D g2d = (Graphics2D) g;
-
-        g2d.setColor(new Color(255, 255, 255));
-        g2d.drawRect(10, 10, 500, 500);
+        g.drawImage(mmImages.get("bg"), 0, 0, null);
+        g.drawImage(mmImages.get("logo"), 230, 25, null);
+        drawButton(g2d, mmImages.get("play"), mmImages.get("playhover"), 361, 320, 559, 130, -14, -16);
+        drawButton(g2d, mmImages.get("instr"), mmImages.get("instrhover"), 361, 435, 559, 130, -14, -16);
+        drawButton(g2d, mmImages.get("about"), mmImages.get("abouthover"), 361, 550, 559, 130, -14, -16);
     }
 
     public void drawLevelSelect(Graphics g) {
@@ -78,9 +107,24 @@ public class Menu extends JPanel implements MouseListener, KeyListener, Runnable
 
     }
 
+    public void drawAbout(Graphics g) {
+
+    }
+
     protected boolean drawButton(Graphics2D g, Image img, Image imghover, int posX, int posY, int width, int height) {
         Point mousePos = myGetMousePosition();
         boolean hoveredOver = mousePos.x > posX && mousePos.x < posX + width && mousePos.y > posY && mousePos.y < posY + height;
+        if (hoveredOver && imghover != null) {
+            g.drawImage(imghover, posX, posY, null);
+        } else {
+            g.drawImage(img, posX, posY, null);
+        }
+        return hoveredOver;
+    }
+
+    protected boolean drawButton(Graphics2D g, Image img, Image imghover, int posX, int posY, int width, int height, int paddingX, int paddingY) {
+        Point mousePos = myGetMousePosition();
+        boolean hoveredOver = mousePos.x > (posX - paddingX) && mousePos.x < (posX + width + paddingX) && mousePos.y > (posY - paddingY) && mousePos.y < (posY + height + paddingY);
         if (hoveredOver && imghover != null) {
             g.drawImage(imghover, posX, posY, null);
         } else {
@@ -162,6 +206,10 @@ public class Menu extends JPanel implements MouseListener, KeyListener, Runnable
     public void mouseClicked(MouseEvent e) {
         if (currentMenu == MENU_GAME) {
             engine.mouseClicked(e);
+        } else if (currentMenu == MENU_MAIN) {
+            if (inRectangle(e, 375, 906, 336,  434)) currentMenu = MENU_LEVEL_SELECT;
+            if (inRectangle(e, 375, 906, 451,  549)) currentMenu = MENU_INSTRUCTIONS;
+            if (inRectangle(e, 375, 906, 566,  664)) currentMenu = MENU_CREDITS;
         }
     }
 
@@ -175,6 +223,10 @@ public class Menu extends JPanel implements MouseListener, KeyListener, Runnable
         if (currentMenu == MENU_GAME) {
             engine.mouseReleased(e);
         }
+    }
+
+    private boolean inRectangle(MouseEvent e, int left, int right, int up, int down) {
+        return e.getX() > left && e.getX() < right && e.getY() > up && e.getY() < down;
     }
 
     public void mouseEntered(MouseEvent e) {

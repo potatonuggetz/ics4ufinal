@@ -25,6 +25,7 @@ public class Menu extends JPanel implements MouseListener, KeyListener, Runnable
     // images
     Map<String, Image> mmImages;
     Map<String, Image> lsImages;
+    Map<String, Image> inImages;
 
     public Menu(JFrame frame) {
         super();
@@ -38,6 +39,7 @@ public class Menu extends JPanel implements MouseListener, KeyListener, Runnable
 
         mmImages = new HashMap<>();
         lsImages = new HashMap<>();
+        inImages = new HashMap<>();
 
         // import images
         try {
@@ -63,12 +65,15 @@ public class Menu extends JPanel implements MouseListener, KeyListener, Runnable
                 lsImages.put(Integer.toString(i), ImageIO.read(new File("img/ui/level_select_" + i + ".png")));
                 lsImages.put(i + "h", ImageIO.read(new File("img/ui/level_select_" + i + "h.png")));
             }
-            System.out.println(lsImages);
+
+            inImages.put("bg", ImageIO.read(new File("img/bg/instructions.jpg")));
+            inImages.put("logo", ImageIO.read(new File("img/ui/instructions_logo.png")));
+            inImages.put("backbutton", ImageIO.read(new File("img/ui/instructions_backbutton.png")));
+            inImages.put("backbuttonhover", ImageIO.read(new File("img/ui/instructions_backbuttonhover.png")));
         } catch (IOException e) {
 
         }
 
-        //startGame(); // temp
         new Thread(this).start();
     }
 
@@ -147,7 +152,11 @@ public class Menu extends JPanel implements MouseListener, KeyListener, Runnable
     }
 
     public void drawInstructions(Graphics g) {
+        Graphics2D g2d = (Graphics2D) g;
+        g.drawImage(inImages.get("bg"), 0, 0, null);
+        g.drawImage(inImages.get("logo"), 316, 30, null);
 
+        drawButton(g2d, inImages.get("backbutton"), inImages.get("backbuttonhover"), 15, 15, 90, 90);
     }
 
     public void drawAbout(Graphics g) {
@@ -239,7 +248,11 @@ public class Menu extends JPanel implements MouseListener, KeyListener, Runnable
     }
 
     public void keyPressed(KeyEvent e) {
-
+        if (currentMenu == MENU_GAME) {
+            if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+                engine.pause();
+            }
+        }
     }
 
     public void keyReleased(KeyEvent e) {
@@ -249,6 +262,19 @@ public class Menu extends JPanel implements MouseListener, KeyListener, Runnable
     public void mouseClicked(MouseEvent e) {
         if (currentMenu == MENU_GAME) {
             engine.mouseClicked(e);
+        }
+    }
+
+    public void mousePressed(MouseEvent e) {
+        if (currentMenu == MENU_GAME) {
+            if (engine.isGamePaused()) {
+                if (inRectangle(e, 240, 540, 210 ,510)) engine.pause();
+                else if (inRectangle(e, 740, 1040, 210 ,510)) {
+                    currentMenu = MENU_LEVEL_SELECT;
+                }
+            } else {
+                engine.mousePressed(e);
+            }
         } else if (currentMenu == MENU_MAIN) {
             if (inRectangle(e, 375, 906, 336,  434)) {
                 currentMenu = MENU_LEVEL_SELECT;
@@ -298,12 +324,10 @@ public class Menu extends JPanel implements MouseListener, KeyListener, Runnable
                     levelSelectPage = 3;
                 }
             }
-        }
-    }
-
-    public void mousePressed(MouseEvent e) {
-        if (currentMenu == MENU_GAME) {
-            engine.mousePressed(e);
+        } else if (currentMenu == MENU_INSTRUCTIONS) {
+            if (inRectangle(e, 15, 105, 15,  105)) {
+                currentMenu = MENU_MAIN;
+            }
         }
     }
 

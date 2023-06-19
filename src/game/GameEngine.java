@@ -27,6 +27,7 @@ public class GameEngine {
     private static int currentFrame = 0;
     long startTime;
     long nextEnemyTime;
+    private boolean gamePaused;
 
     int gold;
     int health;
@@ -40,6 +41,7 @@ public class GameEngine {
     Image goldDisplay, hpDisplay, waveStart, waveProgress, waveStartHover;
     Image waveIcon, heartIcon, goldIcon;
     Image[] deathAnimations;
+    Image backbutton, backbuttonhover, quitbutton, quitbuttonhover;
 
     public GameEngine(Level level) {
         this.level = level;
@@ -47,6 +49,7 @@ public class GameEngine {
         wave = 0;
         health = 15;
         gold = 100;
+        gamePaused = false;
 
         // initialize a bunch of stuff
         placedTowers = new ArrayList<>();
@@ -73,6 +76,10 @@ public class GameEngine {
            waveIcon = ImageIO.read(new File("img/ui/game_menu_waveicon.png"));
            heartIcon = ImageIO.read(new File("img/ui/game_menu_hearticon.png"));
            goldIcon = ImageIO.read(new File("img/ui/game_menu_goldicon.png"));
+           backbutton = ImageIO.read(new File("img/ui/game_menu_backbutton.png"));
+           backbuttonhover = ImageIO.read(new File("img/ui/game_menu_backbuttonhover.png"));
+           quitbutton = ImageIO.read(new File("img/ui/game_menu_quitbutton.png"));
+           quitbuttonhover = ImageIO.read(new File("img/ui/game_menu_quitbuttonhover.png"));
 
            deathAnimations = new Image[44];
            for (int i = 0; i < 44; i++) {
@@ -99,6 +106,8 @@ public class GameEngine {
     Return: none
      */
     public void update(long lg) {
+        if (gamePaused) return;
+
         currentFrame++;
 
         // for first time run
@@ -298,13 +307,22 @@ public class GameEngine {
     Return: none
      */
     public void draw(Menu menu, Graphics g) {
+        Graphics2D g2d = (Graphics2D) g;
         g.drawImage(this.level.background, 0, 0, null);
         drawGameLogic(g);
         drawGameLayout(menu, g);
         if (selectedTower != null) {
             drawSelectedTower(g);
         }
-        drawEnemyDeath(g);
+        if (!gamePaused) drawEnemyDeath(g);
+
+        if (gamePaused) {
+            g.setColor(new Color(255, 255, 255, 127));
+            g.fillRect(0, 0, 1280, 720);
+
+            menu.drawButton(g2d, backbutton, backbuttonhover, 240, 210, 300, 300);
+            menu.drawButton(g2d, quitbutton, quitbuttonhover, 740, 210, 300, 300);
+        }
     }
 
     /*
@@ -381,6 +399,10 @@ public class GameEngine {
         }
     }
 
+    public void pause() {
+        gamePaused = !gamePaused;
+    }
+
     private Point myGetMousePosition() {
         return MouseInfo.getPointerInfo().getLocation();
     }
@@ -394,13 +416,13 @@ public class GameEngine {
     }
 
     public void mouseClicked(MouseEvent e) {
-        if (inRectangle(e, 384, 512, 600, 720) && wavePaused) {
-            startWave();
-        }
+
     }
 
     public void mousePressed(MouseEvent e) {
-
+        if (inRectangle(e, 384, 512, 600, 720) && wavePaused) {
+            startWave();
+        }
     }
 
     public void mouseReleased(MouseEvent e) {
@@ -414,6 +436,10 @@ public class GameEngine {
 
     public static double getFPS(){
         return FPS;
+    }
+
+    public boolean isGamePaused() {
+        return gamePaused;
     }
 
     public ArrayList<Tower> getPlacedTowers(){

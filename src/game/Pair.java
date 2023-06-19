@@ -1,5 +1,7 @@
 package game;
 public class Pair <U, V> {
+    //implements pair class
+    //literally just a pair
     public final U first;
     public final V second;
 

@@ -1,5 +1,8 @@
 package game;
 public class Line {
+    //basically this class just makes a vector between 2 points
+    //calculates direction vector and magnitude
+    //its just mcv4u
     private final Pair<Integer, Integer> start;
     private final Pair<Integer, Integer> end;
     private final Pair<Integer, Integer> signs;

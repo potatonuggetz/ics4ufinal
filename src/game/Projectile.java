@@ -24,7 +24,7 @@ public class Projectile {
     //on-hit effects
     protected boolean hasSlow;
 
-    //skillshots
+    //skillshots (do not track)
     public Projectile(Tower tower, Ability ability, Pair<Integer,Integer> target) {
         auto = false;
         this.tower = tower;
@@ -65,6 +65,7 @@ public class Projectile {
         path = new Line(new Pair<>(tower.posX,tower.posY), new Pair<>(target.posX,target.posY));
     }
 
+    //moves the projectile in the correct direction according to the vector by the lag-adjusted amount
     public void move(int lag) {
         absPosX += (tower.projectileSpeed * (lag * 0.001)) * path.getDirection().first;
         absPosY += (tower.projectileSpeed * (lag * 0.001)) * path.getDirection().second;

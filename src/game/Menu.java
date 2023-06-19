@@ -27,6 +27,7 @@ public class Menu extends JPanel implements MouseListener, MouseMotionListener, 
     Map<String, Image> lsImages;
     Map<String, Image> inImages;
     Map<String, Image> abImages;
+    Map<String, Image> grImages;
 
     public Menu(JFrame frame) {
         super();
@@ -43,6 +44,7 @@ public class Menu extends JPanel implements MouseListener, MouseMotionListener, 
         lsImages = new HashMap<>();
         inImages = new HashMap<>();
         abImages = new HashMap<>();
+        grImages = new HashMap<>();
 
         // import images
         try {
@@ -78,7 +80,14 @@ public class Menu extends JPanel implements MouseListener, MouseMotionListener, 
             abImages.put("logo", ImageIO.read(new File("img/ui/about_logo.png")));
             abImages.put("backbutton", ImageIO.read(new File("img/ui/about_backbutton.png")));
             abImages.put("backbuttonhover", ImageIO.read(new File("img/ui/about_backbuttonhover.png")));
-        } catch (IOException e) {
+
+            grImages.put("failbg", ImageIO.read(new File("img/bg/fail.png")));
+            grImages.put("passbg", ImageIO.read(new File("img/bg/pass.png")));
+            grImages.put("continue", ImageIO.read(new File("img/ui/game_results_continue.png")));
+            grImages.put("continuehover", ImageIO.read(new File("img/ui/game_results_continuehover.png")));
+            grImages.put("failicon", ImageIO.read(new File("img/ui/game_results_fail.png")));
+            grImages.put("winicon", ImageIO.read(new File("img/ui/game_results_win.png")));
+       } catch (IOException e) {
 
         }
 
@@ -153,10 +162,28 @@ public class Menu extends JPanel implements MouseListener, MouseMotionListener, 
         engine.update(currTime - lastTime);
         lastTime = currTime;
         engine.draw(this, g);
+        if (engine.isDone()) {
+            currentMenu = MENU_GAME_RESULTS;
+        }
     }
 
     public void drawGameResults(Graphics g) {
-
+        if (engine.health > 0) {
+            g.drawImage(grImages.get("passbg"), 0, 0 ,null);
+            g.setColor(new Color(0, 0, 0, 127));
+            g.fillRect(330, 50, 620, 620);
+            g.drawImage(grImages.get("winicon"), 480 ,20, null);
+            g.setColor(new Color(255,255,255));
+            drawCenteredString(g, "Health Left: " + engine.health, new Rectangle(330, 300, 620, 50), engine.gamerfont, 0, 0);
+        } else {
+            g.drawImage(grImages.get("failbg"), 0, 0 ,null);
+            g.setColor(new Color(0, 0, 0, 127));
+            g.fillRect(330, 50, 620, 620);
+            g.drawImage(grImages.get("failicon"), 480 ,0, null);
+            g.setColor(new Color(255,255,255));
+            drawCenteredString(g, "Highest Wave: " + (engine.wave - 1), new Rectangle(330, 300, 620, 50), engine.gamerfont, 0, 0);
+        }
+        drawButton((Graphics2D) g, grImages.get("continue"), grImages.get("continuehover"), 490, 360, 300, 300);
     }
 
     public void drawInstructions(Graphics g) {
@@ -352,6 +379,10 @@ public class Menu extends JPanel implements MouseListener, MouseMotionListener, 
         } else if (currentMenu == MENU_CREDITS) {
             if (inRectangle(e, 15, 105, 15,  105)) {
                 currentMenu = MENU_MAIN;
+            }
+        } else if (currentMenu == MENU_GAME_RESULTS) {
+            if (inRectangle(e, 490, 790, 360, 660)) {
+                currentMenu = MENU_LEVEL_SELECT;
             }
         }
     }

@@ -35,6 +35,7 @@ public class GameEngine {
     long startTime;
     long nextEnemyTime;
     private boolean gamePaused;
+    private boolean gameDone;
 
     int gold;
     int health;
@@ -144,6 +145,7 @@ public class GameEngine {
         // check if wave paused
         wavePaused = nextEnemyTime == -1 && shownEnemies.isEmpty() && nextWave.isEmpty();
         if (wavePaused) {
+            if (level.enemies.isEmpty()) gameDone = true;
             return;
         }
 
@@ -217,6 +219,7 @@ public class GameEngine {
 
                     if (e.leg >= this.level.paths.get(e.path).size()) {
                         health--;
+                        if (health <= 0) gameDone = true;
                         i.remove();
                         continue;
                     }
@@ -591,6 +594,10 @@ public class GameEngine {
 
     public boolean isGamePaused() {
         return gamePaused;
+    }
+
+    public boolean isDone() {
+        return gameDone;
     }
 
     public ArrayList<Tower> getPlacedTowers(){

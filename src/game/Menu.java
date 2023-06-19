@@ -26,6 +26,7 @@ public class Menu extends JPanel implements MouseListener, MouseMotionListener, 
     Map<String, Image> mmImages;
     Map<String, Image> lsImages;
     Map<String, Image> inImages;
+    Map<String, Image> abImages;
 
     public Menu(JFrame frame) {
         super();
@@ -41,6 +42,7 @@ public class Menu extends JPanel implements MouseListener, MouseMotionListener, 
         mmImages = new HashMap<>();
         lsImages = new HashMap<>();
         inImages = new HashMap<>();
+        abImages = new HashMap<>();
 
         // import images
         try {
@@ -71,6 +73,11 @@ public class Menu extends JPanel implements MouseListener, MouseMotionListener, 
             inImages.put("logo", ImageIO.read(new File("img/ui/instructions_logo.png")));
             inImages.put("backbutton", ImageIO.read(new File("img/ui/instructions_backbutton.png")));
             inImages.put("backbuttonhover", ImageIO.read(new File("img/ui/instructions_backbuttonhover.png")));
+
+            abImages.put("bg", ImageIO.read(new File("img/bg/about.jpg")));
+            abImages.put("logo", ImageIO.read(new File("img/ui/about_logo.png")));
+            abImages.put("backbutton", ImageIO.read(new File("img/ui/about_backbutton.png")));
+            abImages.put("backbuttonhover", ImageIO.read(new File("img/ui/about_backbuttonhover.png")));
         } catch (IOException e) {
 
         }
@@ -161,7 +168,14 @@ public class Menu extends JPanel implements MouseListener, MouseMotionListener, 
     }
 
     public void drawAbout(Graphics g) {
+        Graphics2D g2d = (Graphics2D) g;
+        g.drawImage(abImages.get("bg"), 0, 0, null);
+        g.drawImage(abImages.get("logo"), 316, 30, null);
 
+        drawButton(g2d, abImages.get("backbutton"), abImages.get("backbuttonhover"), 15, 15, 90, 90);
+
+        g.setColor(new Color(0, 0, 0, 127));
+        g.fillRect(50, 300, 1180, 370);
     }
 
     protected boolean drawButton(Graphics2D g, Image img, Image imghover, int posX, int posY, int width, int height) {
@@ -326,6 +340,10 @@ public class Menu extends JPanel implements MouseListener, MouseMotionListener, 
                 }
             }
         } else if (currentMenu == MENU_INSTRUCTIONS) {
+            if (inRectangle(e, 15, 105, 15,  105)) {
+                currentMenu = MENU_MAIN;
+            }
+        } else if (currentMenu == MENU_CREDITS) {
             if (inRectangle(e, 15, 105, 15,  105)) {
                 currentMenu = MENU_MAIN;
             }

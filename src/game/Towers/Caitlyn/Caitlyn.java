@@ -14,7 +14,9 @@ public class Caitlyn extends Tower{
         attackDamage=new double[]{0,10,20,40,70,100};
         abilityPower=new double[]{0,0,0,0,0,0};
         attackSpeed=new double[]{0,0.6,0.7,0.9,1.2,1.5};
-        projectileSpeed=75;
+        projectileSpeed=600;
+        projSizeX=4;
+        projSizeY=4;
         range=200;
         currentAttackDamage=attackDamage[level];
         currentAbilityPower=abilityPower[level];

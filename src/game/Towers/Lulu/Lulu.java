@@ -14,7 +14,7 @@ public class Lulu extends Tower{
         attackDamage=new double[]{0,1,2,3,4,5};
         abilityPower=new double[]{0,10,20,30,40,50};
         attackSpeed=new double[]{0,0.6,0.7,0.9,1.2,1.5};
-        projectileSpeed=75;
+        projectileSpeed=350;
         range=110;
         currentAttackDamage=attackDamage[level];
         currentAbilityPower=abilityPower[level];
@@ -24,6 +24,7 @@ public class Lulu extends Tower{
         towerAbilities.add(new LuluW(this));
         try {
             this.image = ImageIO.read(new File("img/tower/lulu.png"));
+            this.projectileAuto=ImageIO.read(new File("img/tower/luluAuto.png"));
         } catch (IOException e) {
             e.printStackTrace();
         }

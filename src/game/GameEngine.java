@@ -226,9 +226,7 @@ public class GameEngine {
 
         // towers attack
         for (Tower t : this.placedTowers) {
-            System.out.println("vobe");
             if(t.getCurrentAttackCooldown()==0){
-                System.out.println("POGOGG");
                 if(t.targeting==Tower.TARGETING_FIRST) Collections.sort(shownEnemies);
                 else if(t.targeting==Tower.TARGETING_LAST) Collections.sort(shownEnemies,new SortEnemyLast());
                 else if(t.targeting==Tower.TARGETING_STRONG) Collections.sort(shownEnemies,new SortEnemyStrong());
@@ -390,7 +388,8 @@ public class GameEngine {
     Return: none
      */
     public void drawSelectedTower(Graphics g) {
-
+        g.setColor(new Color(0,0,0,127));
+        g.fillOval(selectedTower.posX-selectedTower.range,selectedTower.posY-selectedTower.range,selectedTower.range*2,selectedTower.range*2);
     }
 
     public void drawHoveredTower(Graphics g){
@@ -435,13 +434,24 @@ public class GameEngine {
     }
 
     public void mouseClicked(MouseEvent e) {
-        if (inRectangle(e, 384, 512, 600, 720) && wavePaused) {
-            startWave();
-        }
+        
     }
 
     public void mousePressed(MouseEvent e) {
-        if(inRectangle(e,256*2,256*2+128,600,720)){
+        if (inRectangle(e, 384, 512, 600, 720) && wavePaused) {
+            startWave();
+        }else if(inRectangle(e, 0, 1280, 0, 600)){
+            Double d=Double.MAX_VALUE;
+            selectedTower=null;
+            for(Tower t:placedTowers){
+                Line l=new Line(new Pair<Integer,Integer>(e.getX(), e.getY()), new Pair<Integer,Integer>(t.posX, t.posY));
+                if(l.getDistance()<d&&inRectangle(e, t.posX-t.sizeX, t.posX+t.sizeX, t.posY-t.sizeY, t.posY+t.sizeY)){
+                    d=l.getDistance();
+                    selectedTower=t;
+                }
+            }
+        }
+        else if(inRectangle(e,256*2,256*2+128,600,720)){
             placingTower=true;
             hoveredTower=new Ashe(0,0);
         }else if(inRectangle(e,256*2+128,256*3,600,720)){

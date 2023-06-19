@@ -4,7 +4,8 @@ public class LuluW extends Ability{
     public LuluW(Tower t){
         super(t);
         name="Whimsy";
-        description="Lulu instantly casts erratic magic upon the target allied champion or herself, granting the target bonus attack speed and increased attack damage and ability power.";
+        description="Lulu casts magic upon the target allied champion or herself, granting the";
+        description2="target bonus attack speed and increased attack damage and ability power.";
         cooldown=new double[]{1000,18,17,16,15,13};
         projSizeX=15;
         projSizeY=15;

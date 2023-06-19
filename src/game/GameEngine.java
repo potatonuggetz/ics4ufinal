@@ -41,7 +41,7 @@ public class GameEngine {
     int wave;
     boolean wavePaused;
 
-    Font gamerfont;
+    Font gamerfont, namefont, infofont, boldfont, descfont, descfonttiny;
 
     int mouseX;
     int mouseY;
@@ -53,6 +53,7 @@ public class GameEngine {
     Image waveIcon, heartIcon, goldIcon;
     Image[] deathAnimations;
     Image backbutton, backbuttonhover, quitbutton, quitbuttonhover;
+    Image abilitycooldown, abilityready, abilityreadyhover;
 
     public GameEngine(Level level) {
         this.level = level;
@@ -72,8 +73,13 @@ public class GameEngine {
         eventsToRemove=new HashMap<>();
         nextWave = new LinkedList<>();
 
-        // font for gold, health, wave display
+        // fonts
         gamerfont = new Font("Consolas", Font.PLAIN,40);
+        namefont = new Font("Calibri", Font.BOLD, 30);
+        boldfont = new Font("Calibri", Font.BOLD, 23);
+        infofont = new Font("Calibri", Font.PLAIN, 17);
+        descfont = new Font("Calibri", Font.ITALIC, 17);
+        descfonttiny = new Font("Calibri", Font.ITALIC, 12);
 
         // add images
         try {
@@ -97,8 +103,9 @@ public class GameEngine {
             backbuttonhover = ImageIO.read(new File("img/ui/game_menu_backbuttonhover.png"));
             quitbutton = ImageIO.read(new File("img/ui/game_menu_quitbutton.png"));
             quitbuttonhover = ImageIO.read(new File("img/ui/game_menu_quitbuttonhover.png"));
-          
-             
+            abilitycooldown = ImageIO.read(new File("img/ui/game_menu_abilitycooldown.png"));
+            abilityready = ImageIO.read(new File("img/ui/game_menu_abilityready.png"));
+            abilityreadyhover = ImageIO.read(new File("img/ui/game_menu_abilityreadyhover.png"));
 
             deathAnimations = new Image[44];
             for (int i = 0; i < 44; i++) {
@@ -335,7 +342,7 @@ public class GameEngine {
         drawGameLayout(menu, g);
         if(placingTower) drawHoveredTower(g);
         if (selectedTower != null) {
-            drawSelectedTower(g);
+            drawSelectedTower(menu, g);
         }
         if (!gamePaused) drawEnemyDeath(g);
 
@@ -416,9 +423,42 @@ public class GameEngine {
     Parameters: Graphics (to draw)
     Return: none
      */
-    public void drawSelectedTower(Graphics g) {
-        g.setColor(new Color(0,0,0,127));
+    public void drawSelectedTower(Menu menu, Graphics g) {
+        g.setColor(new Color(153, 204, 255,127));
         g.fillOval(selectedTower.posX-selectedTower.range,selectedTower.posY-selectedTower.range,selectedTower.range*2,selectedTower.range*2);
+
+        g.setColor(new Color(0, 0, 0, 165));
+        g.fillRect(896, 150, 128*3, 450);
+        g.setColor(new Color(255,255,255));
+        g.setFont(namefont);
+        g.drawString(selectedTower.getName(), 906, 180);
+        g.setFont(descfont);
+        g.drawString(selectedTower.getDescription(), 906, 207);
+
+        g.setFont(boldfont);
+        g.drawString("Level: " + selectedTower.level, 906, 260);
+        g.setFont(infofont);
+        g.drawString("XP: " + selectedTower.xp + "/100", 906, 287);
+
+        g.drawString("Damage: " + selectedTower.currentAttackDamage, 906, 340);
+        g.drawString("Ability Power: " + selectedTower.currentAbilityPower, 906, 367);
+        g.drawString("Attack Speed: " + selectedTower.currentAttackSpeed, 906, 394);
+
+        g.setFont(boldfont);
+        g.drawString("Ability: " + selectedTower.towerAbilities.get(0).name, 906, 447);
+        g.setFont(descfonttiny);
+        g.drawString(selectedTower.towerAbilities.get(0).description, 906, 466);
+        g.drawString(selectedTower.towerAbilities.get(0).description2, 906, 485);
+
+        g.fillRect(896, 500, 128*3, 100);
+
+        if (selectedTower.towerAbilities.get(0).getCurrentCooldown() == 0) {
+            menu.drawButton((Graphics2D) g, abilityready, abilityreadyhover, 896, 500, 128*3, 100);
+            menu.drawCenteredString(g, "Activate", new Rectangle(896, 500, 128*3, 100), gamerfont, 0, 6);
+        } else {
+            g.drawImage(abilitycooldown, 896, 500, null);
+            menu.drawCenteredString(g, String.valueOf((int)selectedTower.towerAbilities.get(0).getCurrentCooldown()), new Rectangle(896, 500, 128*3, 100), gamerfont, 0, 6);
+        }
     }
 
     public void drawHoveredTower(Graphics g){
@@ -437,9 +477,7 @@ public class GameEngine {
                 i.remove();
                 continue;
             }
-            AlphaComposite ac = AlphaComposite.getInstance(AlphaComposite.SRC_OVER,(float)((44.0 - e.deathAnimationCount) / 44.0));
             g.drawImage(e.image, e.posX-e.sizeX, e.posY-e.sizeY, null);
-            ac = AlphaComposite.getInstance(AlphaComposite.SRC_OVER,1);
             g.drawImage(deathAnimations[e.deathAnimationCount], e.posX-e.sizeX, e.posY-e.sizeY, null);
             e.deathAnimationCount++;
         }

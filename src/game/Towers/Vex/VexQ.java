@@ -4,7 +4,8 @@ public class VexQ extends Ability{
     public VexQ(Tower t){
         super(t);
         name="Mistral Bolt";
-        description="Vex launches a wave of mist in the target direction that slows and deals magic damage to enemies hit.";
+        description="Vex launches a wave of mist in the target direction that slows and deals";
+        description2="magic damage to enemies hit.";
         cooldown=new double[]{1000,8,7,6,5,4};
         projSizeX=50;
         projSizeY=50;

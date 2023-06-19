@@ -4,6 +4,7 @@ import java.awt.*;
 abstract public class Ability {
     protected String name;
     protected String description;
+    protected String description2;
     protected double[] cooldown; //measured in seconds
     protected double timeLastUsed; //frame that ability was last used
     protected Tower tower;

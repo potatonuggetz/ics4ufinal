@@ -423,8 +423,9 @@ public class GameEngine {
         ListIterator<Enemy> i = dyingEnemies.listIterator();
         while (i.hasNext()) {
             Enemy e = i.next();
-            if (e.deathAnimationCount > 44) {
+            if (e.deathAnimationCount >= 44) {
                 i.remove();
+                continue;
             }
             AlphaComposite ac = AlphaComposite.getInstance(AlphaComposite.SRC_OVER,(float)((44.0 - e.deathAnimationCount) / 44.0));
             g.drawImage(e.image, e.posX-e.sizeX, e.posY-e.sizeY, null);

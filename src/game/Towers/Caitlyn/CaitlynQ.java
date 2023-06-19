@@ -1,4 +1,9 @@
 package game.Towers.Caitlyn;
+import java.io.File;
+import java.io.IOException;
+
+import javax.imageio.ImageIO;
+
 import game.*;
 public class CaitlynQ extends Ability{
     public CaitlynQ(Tower t){
@@ -14,6 +19,11 @@ public class CaitlynQ extends Ability{
         scalingAD=3.5;
         scalingAP=0;
         pierce=727;
+        try {
+            projectile = ImageIO.read(new File("img/tower/caitlynQ.png"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
     
     public void use(int x,int y,GameEngine g){

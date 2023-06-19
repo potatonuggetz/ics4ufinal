@@ -14,6 +14,7 @@ import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
+import java.util.Queue;
 
 public class GameEngine {
 
@@ -27,6 +28,9 @@ public class GameEngine {
     Tower selectedTower;
     boolean placingTower;
     Tower hoveredTower;
+    Tower affectedTower;
+    boolean targetingAbility;
+    Ability selectedAbility;
     private Level level;
     private Queue<Enemy> nextWave;
 
@@ -135,8 +139,6 @@ public class GameEngine {
     public void update(long lg) {
         if (gamePaused) return;
 
-        currentFrame++;
-
         // for first time run
         if (lg > 2147483647L) lg = 16;
         int lag = (int)lg;
@@ -146,6 +148,8 @@ public class GameEngine {
         if (wavePaused) {
             return;
         }
+
+        currentFrame++;
 
         //remove all buffs to be removed
         {
@@ -287,7 +291,10 @@ public class GameEngine {
                             tempEvents.add(new TemporaryEvent(e,p.ability));
                             j.remove();
                             p.ability.pierce--;
-                            if(p.ability.pierce<=0) i.remove();
+                            if(p.ability.pierce<=0) {
+                                i.remove();
+                                break;
+                            }
                         }
                     }
                 }
@@ -344,6 +351,7 @@ public class GameEngine {
         if (selectedTower != null) {
             drawSelectedTower(menu, g);
         }
+        if(targetingAbility) drawAbilityTarget(g);
         if (!gamePaused) drawEnemyDeath(g);
 
         if (gamePaused) {
@@ -454,7 +462,8 @@ public class GameEngine {
 
         if (selectedTower.towerAbilities.get(0).getCurrentCooldown() == 0) {
             menu.drawButton((Graphics2D) g, abilityready, abilityreadyhover, 896, 500, 128*3, 100);
-            menu.drawCenteredString(g, "Activate", new Rectangle(896, 500, 128*3, 100), gamerfont, 0, 6);
+            if(!targetingAbility) menu.drawCenteredString(g, "Activate", new Rectangle(896, 500, 128*3, 100), gamerfont, 0, 6);
+            else menu.drawCenteredString(g, "Targeting Ability", new Rectangle(896, 500, 128*3, 100), gamerfont, 0, 6);
         } else {
             g.drawImage(abilitycooldown, 896, 500, null);
             menu.drawCenteredString(g, String.valueOf((int)selectedTower.towerAbilities.get(0).getCurrentCooldown()), new Rectangle(896, 500, 128*3, 100), gamerfont, 0, 6);
@@ -466,6 +475,11 @@ public class GameEngine {
         if(gold>=hoveredTower.gold) g.setColor(new Color(0,0,0,127));
         else g.setColor(new Color(255,0,0,127));
         g.fillOval(mouseX-hoveredTower.range,mouseY-hoveredTower.range,hoveredTower.range*2,hoveredTower.range*2);
+    }
+
+    public void drawAbilityTarget(Graphics g){
+        g.setColor(new Color(255, 255, 255));
+        g.drawOval(selectedTower.posX-selectedAbility.range, selectedTower.posY-selectedAbility.range, selectedAbility.range*2, selectedAbility.range*2);
     }
 
     // cycle through death animation
@@ -516,7 +530,34 @@ public class GameEngine {
     public void mousePressed(MouseEvent e) {
         if (inRectangle(e, 384, 512, 600, 720) && wavePaused) {
             startWave();
-        }else if(inRectangle(e, 0, 1280, 0, 600)){
+        }else if(inRectangle(e, 0, 10, 700, 720)){
+            gold+=100;
+        }
+        else if(inRectangle(e, 896, 896+128*3, 500, 600)&&selectedTower!=null&&selectedTower.towerAbilities.get(0).getCurrentCooldown()==0){
+            selectedAbility=selectedTower.towerAbilities.get(0);
+            targetingAbility=true;
+        }else if(inRectangle(e, 0, 1280, 0, 600)&&targetingAbility){
+            if(selectedAbility.name!="Whimsy"){
+                selectedAbility.use(e.getX(),e.getY(),this);
+            }
+            else{
+                Double d=Double.MAX_VALUE;
+                affectedTower=null;
+                for(Tower t:placedTowers){
+                Line l=new Line(new Pair<Integer,Integer>(e.getX(), e.getY()), new Pair<Integer,Integer>(t.posX, t.posY));
+                if(l.getDistance()<d&&inRectangle(e, t.posX-t.sizeX, t.posX+t.sizeX, t.posY-t.sizeY, t.posY+t.sizeY)){
+                    d=l.getDistance();
+                    affectedTower=t;
+                }
+                if(affectedTower!=null){
+                    selectedAbility.timeLastUsed=GameEngine.getCurrentFrame();
+                    addBuff(new TemporaryEvent(affectedTower, selectedAbility));
+                }
+                }
+            }
+            targetingAbility=false;
+        }
+        else if(inRectangle(e, 0, 1280, 0, 600)){
             Double d=Double.MAX_VALUE;
             selectedTower=null;
             for(Tower t:placedTowers){

@@ -1,4 +1,9 @@
 package game.Towers.Ezreal;
+import java.io.File;
+import java.io.IOException;
+
+import javax.imageio.ImageIO;
+
 import game.*;
 public class EzrealQ extends Ability{
     public EzrealQ(Tower t){
@@ -14,6 +19,11 @@ public class EzrealQ extends Ability{
         scalingAD=3;
         scalingAP=0;
         pierce=1;
+        try {
+            projectile = ImageIO.read(new File("img/tower/ezrealQ.png"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
     
     public void use(int x,int y,GameEngine g){

@@ -1,4 +1,9 @@
 package game.Towers.Veigar;
+import java.io.File;
+import java.io.IOException;
+
+import javax.imageio.ImageIO;
+
 import game.*;
 public class VeigarQ extends Ability{
     public VeigarQ(Tower t){
@@ -14,6 +19,11 @@ public class VeigarQ extends Ability{
         scalingAD=0;
         scalingAP=1.5;
         pierce=2;
+        try {
+            projectile = ImageIO.read(new File("img/tower/veigarQ.png"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
     
     public void use(int x,int y,GameEngine g){

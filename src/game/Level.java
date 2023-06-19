@@ -17,6 +17,7 @@ public class Level {
     protected Image background;
 
     public Level(String file) {
+        //buffered reader of the file
         BufferedReader br = null;
         try {
             br = new BufferedReader(new FileReader(file));
@@ -38,6 +39,7 @@ public class Level {
             Pair<Integer, Integer> lastPoint = null;
             ArrayList<Line> p = new ArrayList<>();
             while (!(line = br.readLine()).equals(":Enemies")) {
+                //each equals sign denotes a new path
                 if (line.startsWith("=")) {
                     if (p.size() != 0) {
                         paths.add(p);
@@ -49,18 +51,22 @@ public class Level {
                 if (lastPoint == null) {
                     lastPoint = new Pair<>(Integer.parseInt(line.split(",")[0]), Integer.parseInt(line.split(",")[1]));
                 } else {
+                    //add a new leg to the path composed of the 2 points
                     Pair<Integer, Integer> newPoint = new Pair<>(Integer.parseInt(line.split(",")[0]), Integer.parseInt(line.split(",")[1]));
                     p.add(new Line(lastPoint, newPoint));
                     lastPoint = newPoint;
                 }
             }
             Queue<Enemy> q = new LinkedList<>();;
+            //enemies
             while (!(line = br.readLine()).equals(":Background")) {
+                //equals sign denotes a new wave
                 if (line.startsWith("=")) {
                     if (!q.isEmpty()) enemies.add(q);
                     q = new LinkedList<>();
                     continue;
                 }
+                //parse the comma-separated string and create enemy object using it
                 StringTokenizer st = new StringTokenizer(line, ",");
                 int spawnTime = Integer.parseInt(st.nextToken());
                 String enemyName = st.nextToken();
@@ -79,7 +85,7 @@ public class Level {
 
         }
     }
-
+    //matches the string to an object
     private Enemy matchEnemy(String s, int spawnTime, int path) {
         //XD
         if (s.equals("Boccher")) return new Boccher(spawnTime, path, paths.get(path).get(0).getStart().first, paths.get(path).get(0).getStart().second);

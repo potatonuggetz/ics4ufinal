@@ -32,7 +32,8 @@ public class Level {
         try {
             if (!br.readLine().equals(":Paths")) {
                 System.out.println("invalid format");
-                return;
+                br.close();
+                throw new NumberFormatException("test");
             }
             Pair<Integer, Integer> lastPoint = null;
             ArrayList<Line> p = new ArrayList<>();

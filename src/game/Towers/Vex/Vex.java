@@ -14,11 +14,17 @@ public class Vex extends Tower{
         attackDamage=new double[]{0,10,15,20,25,30};
         abilityPower=new double[]{0,50,100,150,200,250};
         attackSpeed=new double[]{0,0.6,0.7,0.8,0.9,1.0};
-        projectileSpeed=75;
+        projectileSpeed=350;
         range=100;
+        currentAttackDamage=attackDamage[level];
+        currentAbilityPower=abilityPower[level];
+        currentAttackSpeed=attackSpeed[level];
+        sizeX=37;
+        sizeY=50;
         towerAbilities.add(new VexQ(this));
         try {
             this.image = ImageIO.read(new File("img/tower/vex.png"));
+            this.projectileAuto=ImageIO.read(new File("img/tower/vexAuto.png"));
         } catch (IOException e) {
             e.printStackTrace();
         }

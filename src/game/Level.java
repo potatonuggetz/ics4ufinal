@@ -4,8 +4,6 @@ import game.Enemies.*;
 
 import javax.imageio.ImageIO;
 
-import game.Enemies.*;
-
 import java.awt.*;
 import java.io.*;
 import java.util.Queue;

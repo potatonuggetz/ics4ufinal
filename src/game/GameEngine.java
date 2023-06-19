@@ -2,7 +2,12 @@ package game;
 
 import javax.imageio.ImageIO;
 
-import game.Towers.Ashe.AsheP;
+import game.Towers.Ashe.*;
+import game.Towers.Caitlyn.*;
+import game.Towers.Ezreal.*;
+import game.Towers.Lulu.*;
+import game.Towers.Veigar.*;
+import game.Towers.Vex.*;
 
 import java.awt.*;
 import java.awt.event.MouseEvent;
@@ -20,6 +25,8 @@ public class GameEngine {
     private HashMap<Integer,TemporaryEvent> eventsToRemove;
     public ArrayList<Tower> availableTowers;
     Tower selectedTower;
+    boolean placingTower;
+    Tower hoveredTower;
     private Level level;
     private Queue<Enemy> nextWave;
 
@@ -36,8 +43,12 @@ public class GameEngine {
 
     Font gamerfont;
 
+    int mouseX;
+    int mouseY;
+
     // images
     Image towerframe, towerframeSelected;
+    Image ashe,caitlyn,ezreal,lulu,veigar,vex;
     Image goldDisplay, hpDisplay, waveStart, waveProgress, waveStartHover;
     Image waveIcon, heartIcon, goldIcon;
     Image[] deathAnimations;
@@ -66,25 +77,34 @@ public class GameEngine {
 
         // add images
         try {
-           towerframe = ImageIO.read(new File("img/ui/game_menu_tower_frame.png"));
-           towerframeSelected = ImageIO.read(new File("img/ui/game_menu_tower_selected.png"));
-           goldDisplay = ImageIO.read(new File("img/ui/game_menu_golddisplay.png"));
-           hpDisplay = ImageIO.read(new File("img/ui/game_menu_hpdisplay.png"));
-           waveStart = ImageIO.read(new File("img/ui/game_menu_wavestart.png"));
-           waveStartHover = ImageIO.read(new File("img/ui/game_menu_wavestarthover.png"));
-           waveProgress = ImageIO.read(new File("img/ui/game_menu_waveprogress.png"));
-           waveIcon = ImageIO.read(new File("img/ui/game_menu_waveicon.png"));
-           heartIcon = ImageIO.read(new File("img/ui/game_menu_hearticon.png"));
-           goldIcon = ImageIO.read(new File("img/ui/game_menu_goldicon.png"));
-           backbutton = ImageIO.read(new File("img/ui/game_menu_backbutton.png"));
-           backbuttonhover = ImageIO.read(new File("img/ui/game_menu_backbuttonhover.png"));
-           quitbutton = ImageIO.read(new File("img/ui/game_menu_quitbutton.png"));
-           quitbuttonhover = ImageIO.read(new File("img/ui/game_menu_quitbuttonhover.png"));
+            towerframe = ImageIO.read(new File("img/ui/game_menu_tower_frame.png"));
+            towerframeSelected = ImageIO.read(new File("img/ui/game_menu_tower_selected.png"));
+            goldDisplay = ImageIO.read(new File("img/ui/game_menu_golddisplay.png"));
+            hpDisplay = ImageIO.read(new File("img/ui/game_menu_hpdisplay.png"));
+            waveStart = ImageIO.read(new File("img/ui/game_menu_wavestart.png"));
+            waveStartHover = ImageIO.read(new File("img/ui/game_menu_wavestarthover.png"));
+            waveProgress = ImageIO.read(new File("img/ui/game_menu_waveprogress.png"));
+            waveIcon = ImageIO.read(new File("img/ui/game_menu_waveicon.png"));
+            heartIcon = ImageIO.read(new File("img/ui/game_menu_hearticon.png"));
+            goldIcon = ImageIO.read(new File("img/ui/game_menu_goldicon.png"));
+            ashe = ImageIO.read(new File("img/tower/ashe.png"));
+            caitlyn = ImageIO.read(new File("img/tower/caitlyn.png"));
+            ezreal = ImageIO.read(new File("img/tower/ezreal.png"));
+            lulu = ImageIO.read(new File("img/tower/lulu.png"));
+            veigar = ImageIO.read(new File("img/tower/veigar.png"));
+            vex = ImageIO.read(new File("img/tower/vex.png"));
+            backbutton = ImageIO.read(new File("img/ui/game_menu_backbutton.png"));
+            backbuttonhover = ImageIO.read(new File("img/ui/game_menu_backbuttonhover.png"));
+            quitbutton = ImageIO.read(new File("img/ui/game_menu_quitbutton.png"));
+            quitbuttonhover = ImageIO.read(new File("img/ui/game_menu_quitbuttonhover.png"));
+          
+             
 
            deathAnimations = new Image[44];
            for (int i = 0; i < 44; i++) {
                deathAnimations[i] = ImageIO.read(new File("img/ui/boom/death" + (i+1) + ".png"));
            }
+             
         } catch (IOException e) {
 
         }
@@ -277,12 +297,13 @@ public class GameEngine {
                         Line l=new Line(new Pair<>(e.posX,e.posY),new Pair<>(e.posX,e.posY));
                         if(l.getDistance()<=250) t.xp+=10;
                         if(t.xp>=100&&t.level<5) {
-                            t.xp=0;
-                            t.level++;
+                            t.levelUp();
                         }
                     }
 
+
                     dyingEnemies.add(e);
+
                     i.remove();
                 }
             }
@@ -311,6 +332,7 @@ public class GameEngine {
         g.drawImage(this.level.background, 0, 0, null);
         drawGameLogic(g);
         drawGameLayout(menu, g);
+        if(placingTower) drawHoveredTower(g);
         if (selectedTower != null) {
             drawSelectedTower(g);
         }
@@ -350,11 +372,17 @@ public class GameEngine {
         g.drawString(String.valueOf(wave), (342 + ((170 - (10+waveIcon.getWidth(null)+metrics.stringWidth(String.valueOf(wave)))) / 2)) + waveIcon.getWidth(null)+5, 644 + metrics.getAscent());
 
         menu.drawButton(g2d, towerframe, towerframeSelected, 256*2, 600, 128, 120);
+        g.drawImage(ashe, 256*2, 600, 128, 120,null);
         menu.drawButton(g2d, towerframe, towerframeSelected, 256*2+128, 600, 128, 120);
+        g.drawImage(caitlyn, 256*2+128, 600, 128, 120,null);
         menu.drawButton(g2d, towerframe, towerframeSelected, 256*3, 600, 128, 120);
+        g.drawImage(ezreal, 256*3, 600, 128, 120,null);
         menu.drawButton(g2d, towerframe, towerframeSelected, 256*3+128, 600, 128, 120);
+        g.drawImage(lulu, 256*3+128, 600, 128, 120,null);
         menu.drawButton(g2d, towerframe, towerframeSelected, 256*4, 600, 128, 120);
+        g.drawImage(veigar, 256*4, 600, 128, 120,null);
         menu.drawButton(g2d, towerframe, towerframeSelected, 256*4+128, 600, 128, 120);
+        g.drawImage(vex, 256*4+128, 600, 128, 120,null);
     }
 
     /*
@@ -380,7 +408,14 @@ public class GameEngine {
     Return: none
      */
     public void drawSelectedTower(Graphics g) {
+        g.setColor(new Color(0,0,0,127));
+        g.fillOval(selectedTower.posX-selectedTower.range,selectedTower.posY-selectedTower.range,selectedTower.range*2,selectedTower.range*2);
+    }
 
+    public void drawHoveredTower(Graphics g){
+        g.drawImage(hoveredTower.image,mouseX-hoveredTower.sizeX,mouseY-hoveredTower.sizeY,null);
+        g.setColor(new Color(0,0,0,127));
+        g.fillOval(mouseX-hoveredTower.range,mouseY-hoveredTower.range,hoveredTower.range*2,hoveredTower.range*2);
     }
 
     // cycle through death animation
@@ -415,6 +450,16 @@ public class GameEngine {
         return e.getX() > left && e.getX() < right && e.getY() > up && e.getY() < down;
     }
 
+    public void mouseMoved(MouseEvent e){
+        mouseX=e.getX();
+        mouseY=e.getY();
+    }
+
+    public void mouseDragged(MouseEvent e){
+        mouseX=e.getX();
+        mouseY=e.getY();
+    }
+
     public void mouseClicked(MouseEvent e) {
 
     }
@@ -422,11 +467,50 @@ public class GameEngine {
     public void mousePressed(MouseEvent e) {
         if (inRectangle(e, 384, 512, 600, 720) && wavePaused) {
             startWave();
+        }else if(inRectangle(e, 0, 1280, 0, 600)){
+            Double d=Double.MAX_VALUE;
+            selectedTower=null;
+            for(Tower t:placedTowers){
+                Line l=new Line(new Pair<Integer,Integer>(e.getX(), e.getY()), new Pair<Integer,Integer>(t.posX, t.posY));
+                if(l.getDistance()<d&&inRectangle(e, t.posX-t.sizeX, t.posX+t.sizeX, t.posY-t.sizeY, t.posY+t.sizeY)){
+                    d=l.getDistance();
+                    selectedTower=t;
+                }
+            }
+        }
+        else if(inRectangle(e,256*2,256*2+128,600,720)){
+            placingTower=true;
+            hoveredTower=new Ashe(0,0);
+        }else if(inRectangle(e,256*2+128,256*3,600,720)){
+            placingTower=true;
+            hoveredTower=new Caitlyn(0,0);
+        }else if(inRectangle(e,256*3,256*3+128,600,720)){
+            placingTower=true;
+            hoveredTower=new Ezreal(0,0);
+        }else if(inRectangle(e,256*3+128,256*4,600,720)){
+            placingTower=true;
+            hoveredTower=new Lulu(0,0);
+        }else if(inRectangle(e,256*4,256*4+128,600,720)){
+            placingTower=true;
+            hoveredTower=new Veigar(0,0);
+        }else if(inRectangle(e,256*4+128,256*5,600,720)){
+            placingTower=true;
+            hoveredTower=new Vex(0,0);
         }
     }
 
     public void mouseReleased(MouseEvent e) {
-
+        if(placingTower){
+            if(inRectangle(e, 0, 1280, 0, 600)){
+                if(hoveredTower.name.equals("Ashe")) placedTowers.add(new Ashe(e.getX(),e.getY()));
+                if(hoveredTower.name.equals("Caitlyn")) placedTowers.add(new Caitlyn(e.getX(),e.getY()));
+                if(hoveredTower.name.equals("Ezreal")) placedTowers.add(new Ezreal(e.getX(),e.getY()));
+                if(hoveredTower.name.equals("Lulu")) placedTowers.add(new Lulu(e.getX(),e.getY()));
+                if(hoveredTower.name.equals("Veigar")) placedTowers.add(new Veigar(e.getX(),e.getY()));
+                if(hoveredTower.name.equals("Vex")) placedTowers.add(new Vex(e.getX(),e.getY()));
+            }
+            placingTower=false;
+        }
     }
 
     //getters setters

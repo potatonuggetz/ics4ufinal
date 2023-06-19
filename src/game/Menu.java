@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Menu extends JPanel implements MouseListener, KeyListener, Runnable, MouseWheelListener, WindowListener {
+public class Menu extends JPanel implements MouseListener, MouseMotionListener, KeyListener, Runnable, MouseWheelListener, WindowListener {
     public static final int MENU_MAIN = 0;
     public static final int MENU_LEVEL_SELECT = 1;
     public static final int MENU_GAME = 2;
@@ -35,6 +35,7 @@ public class Menu extends JPanel implements MouseListener, KeyListener, Runnable
         addMouseListener(this);
         addKeyListener(this);
         addMouseWheelListener(this);
+        addMouseMotionListener(this);
         frame.addWindowListener(this);
 
         mmImages = new HashMap<>();
@@ -348,4 +349,16 @@ public class Menu extends JPanel implements MouseListener, KeyListener, Runnable
     public void mouseExited(MouseEvent e) {
 
     }
+
+	public void mouseDragged(MouseEvent e) {
+		if (currentMenu == MENU_GAME) {
+            engine.mouseDragged(e);
+        }
+	}
+
+	public void mouseMoved(MouseEvent e) {
+		if (currentMenu == MENU_GAME) {
+            engine.mouseMoved(e);
+        }
+	}
 }

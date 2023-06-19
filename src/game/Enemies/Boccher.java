@@ -16,7 +16,7 @@ public class Boccher extends Enemy {
         }
 
         name = "Boccher";
-        health = 80;
+        health = 10;
         armor = 0;
         magicResist = 0;
         speed = 200;

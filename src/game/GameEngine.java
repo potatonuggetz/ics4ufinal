@@ -2,7 +2,12 @@ package game;
 
 import javax.imageio.ImageIO;
 
-import game.Towers.Ashe.AsheP;
+import game.Towers.Ashe.*;
+import game.Towers.Caitlyn.*;
+import game.Towers.Ezreal.*;
+import game.Towers.Lulu.*;
+import game.Towers.Veigar.*;
+import game.Towers.Vex.*;
 
 import java.awt.*;
 import java.awt.event.MouseEvent;
@@ -20,6 +25,8 @@ public class GameEngine {
     private HashMap<Integer,TemporaryEvent> eventsToRemove;
     public ArrayList<Tower> availableTowers;
     Tower selectedTower;
+    boolean placingTower;
+    Tower hoveredTower;
     private Level level;
     private Queue<Enemy> nextWave;
 
@@ -34,6 +41,9 @@ public class GameEngine {
     boolean wavePaused;
 
     Font gamerfont;
+
+    int mouseX;
+    int mouseY;
 
     // images
     Image towerframe, towerframeSelected;
@@ -310,6 +320,7 @@ public class GameEngine {
         g.drawImage(this.level.background, 0, 0, null);
         drawGameLogic(g);
         drawGameLayout(menu, g);
+        if(placingTower) drawHoveredTower(g);
         if (selectedTower != null) {
             drawSelectedTower(g);
         }
@@ -380,6 +391,16 @@ public class GameEngine {
 
     }
 
+    public void drawHoveredTower(Graphics g){
+        g.drawImage(hoveredTower.image,mouseX-hoveredTower.sizeX,mouseY-hoveredTower.sizeY,null);
+        /*if(hoveredTower.name.equals("Ashe")) g.drawImage(ashe,myGetMousePosition().x-Ashe.getSizeX(),myGetMousePosition().y-Ashe.get,null);
+        if(hoveredTower.equals("Caitlyn")) g.drawImage(caitlyn,myGetMousePosition().x,myGetMousePosition().y,null);
+        if(hoveredTower.equals("Ezreal")) g.drawImage(ezreal,myGetMousePosition().x,myGetMousePosition().y,null);
+        if(hoveredTower.equals("Lulu")) g.drawImage(lulu,myGetMousePosition().x,myGetMousePosition().y,null);
+        if(hoveredTower.equals("Veigar")) g.drawImage(veigar,myGetMousePosition().x,myGetMousePosition().y,null);
+        if(hoveredTower.equals("Vex")) g.drawImage(vex,myGetMousePosition().x,myGetMousePosition().y,null);*/
+    }
+
     // cycle through death animation
     public void drawEnemyDeath(Graphics g) {
         ListIterator<Enemy> i = dyingEnemies.listIterator();
@@ -405,6 +426,16 @@ public class GameEngine {
         return e.getX() > left && e.getX() < right && e.getY() > up && e.getY() < down;
     }
 
+    public void mouseMoved(MouseEvent e){
+        mouseX=e.getX();
+        mouseY=e.getY();
+    }
+
+    public void mouseDragged(MouseEvent e){
+        mouseX=e.getX();
+        mouseY=e.getY();
+    }
+
     public void mouseClicked(MouseEvent e) {
         if (inRectangle(e, 384, 512, 600, 720) && wavePaused) {
             startWave();
@@ -412,11 +443,38 @@ public class GameEngine {
     }
 
     public void mousePressed(MouseEvent e) {
-
+        if(inRectangle(e,256*2,256*2+128,600,720)){
+            placingTower=true;
+            hoveredTower=new Ashe(0,0);
+        }else if(inRectangle(e,256*2+128,256*3,600,720)){
+            placingTower=true;
+            hoveredTower=new Caitlyn(0,0);
+        }else if(inRectangle(e,256*3,256*3+128,600,720)){
+            placingTower=true;
+            hoveredTower=new Ezreal(0,0);
+        }else if(inRectangle(e,256*3+128,256*4,600,720)){
+            placingTower=true;
+            hoveredTower=new Lulu(0,0);
+        }else if(inRectangle(e,256*4,256*4+128,600,720)){
+            placingTower=true;
+            hoveredTower=new Veigar(0,0);
+        }else if(inRectangle(e,256*4+128,256*5,600,720)){
+            placingTower=true;
+            hoveredTower=new Vex(0,0);
+        }
     }
 
     public void mouseReleased(MouseEvent e) {
-
+        if(placingTower&&inRectangle(e, 0, 1280, 0, 600)){
+            if(hoveredTower.name.equals("Ashe")) placedTowers.add(new Ashe(e.getX(),e.getY()));
+            if(hoveredTower.name.equals("Caitlyn")) placedTowers.add(new Caitlyn(e.getX(),e.getY()));
+            if(hoveredTower.name.equals("Ezreal")) placedTowers.add(new Ezreal(e.getX(),e.getY()));
+            if(hoveredTower.name.equals("Lulu")) placedTowers.add(new Lulu(e.getX(),e.getY()));
+            if(hoveredTower.name.equals("Veigar")) placedTowers.add(new Veigar(e.getX(),e.getY()));
+            if(hoveredTower.name.equals("Vex")) placedTowers.add(new Vex(e.getX(),e.getY()));
+            placingTower=false;
+            System.out.println(""+e.getX()+" "+e.getY());
+        }
     }
 
     //getters setters

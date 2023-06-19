@@ -18,6 +18,7 @@ import java.util.Queue;
 
 public class GameEngine {
 
+    //variables
     private ArrayList<Tower> placedTowers;
     private ArrayList<Enemy> shownEnemies;
     private ArrayList<Enemy> dyingEnemies;
@@ -60,6 +61,7 @@ public class GameEngine {
     Image backbutton, backbuttonhover, quitbutton, quitbuttonhover;
     Image abilitycooldown, abilityready, abilityreadyhover;
 
+    //initialize GameEngine
     public GameEngine(Level level) {
         this.level = level;
         nextEnemyTime = -1;
@@ -154,6 +156,8 @@ public class GameEngine {
         currentFrame++;
 
         //remove all buffs to be removed
+        //eventsToRemove is a map where the key is the frame for a buff to be removed and the value is the buff object
+        //if on a certain frame, there exists the key for the frame in the map, remove the buff associated with the key
         {
             if(eventsToRemove.containsKey(currentFrame)){
                 TemporaryEvent e=eventsToRemove.get(currentFrame);
@@ -171,12 +175,16 @@ public class GameEngine {
         //process all buffs
         {
             ListIterator<TemporaryEvent> i=tempEvents.listIterator();
+            //iterate through list of events
             while(i.hasNext()){
                 TemporaryEvent e=i.next();
+                //enemy-targeted debuffs
+                //only speed modifiers
                 if(e.type==TemporaryEvent.TARGET_ENEMY){
                     e.targetEnemy.currentSpeed*=e.ability.slowFactor;
                     //if there are somehow 2 buffs expiring on the same frame then just offset it by 1
                     int j=0;
+                    //after applying the debuff, schedule the removal of the debuff by putting it in the eventsToRemove
                     while(eventsToRemove.containsKey(currentFrame+(int)(e.ability.duration*FPS)+j)){
                         j++;
                     }
@@ -212,26 +220,35 @@ public class GameEngine {
             ListIterator<Enemy> i = shownEnemies.listIterator();
             while (i.hasNext()) {
                 Enemy e = i.next();
+                //the path in a map is made up of legs
+                //each leg is a straight line
                 Line leg;
                 leg = this.level.paths.get(e.path).get(e.leg);
 
+                //lag is to account for the difference between real-world time and frames elapsed
+                //so even if frames are delayed, the enemy will still move the correct amount
                 e.absPosX += (e.currentSpeed * (lag * 0.001)) * leg.getDirection().first;
                 e.absPosY += (e.currentSpeed * (lag * 0.001)) * leg.getDirection().second;
 
+                //if the enemy reaches end of a leg, increment leg count
                 if ((e.absPosX * leg.getSigns().first >= leg.getEnd().first * leg.getSigns().first) && (e.absPosY * leg.getSigns().second >= leg.getEnd().second * leg.getSigns().second)) {
                     e.leg++;
 
+                    //if the enemy reaches the end of the level, deduct health from the player
                     if (e.leg >= this.level.paths.get(e.path).size()) {
                         health--;
+                        //if health reaches 0, end the game
                         if (health <= 0) gameDone = true;
                         i.remove();
                         continue;
                     }
 
+                    //abspos uses decimals and is representative of true position
                     e.absPosX = leg.getEnd().first;
                     e.absPosY = leg.getEnd().second;
                 }
 
+                //pos is rounded to the nearest integer for pixel usage
                 e.posX = (int) Math.round(e.absPosX);
                 e.posY = (int) Math.round(e.absPosY);
 
@@ -248,15 +265,23 @@ public class GameEngine {
         // towers attack
         for (Tower t : this.placedTowers) {
             if(t.getCurrentAttackCooldown()==0){
+                //sort the list of enemies based on the tower's targeting
                 if(t.targeting==Tower.TARGETING_FIRST) Collections.sort(shownEnemies);
                 else if(t.targeting==Tower.TARGETING_LAST) Collections.sort(shownEnemies,new SortEnemyLast());
                 else if(t.targeting==Tower.TARGETING_STRONG) Collections.sort(shownEnemies,new SortEnemyStrong());
+                //for each enemy:
                 for(Enemy e:shownEnemies){
+                    //draw a line between the enemy and the tower
                     Line x=new Line(new Pair<>(t.posX,t.posY),new Pair<>(e.posX,e.posY));
+                    //if the distance between the enemy and the tower is in the tower's range, attack
                     if(x.getDistance()<=t.range){
+                        //create new projectile from the tower auto-targeted to the enemy
                         Projectile p=new Projectile(t, e);
+                        //ashe's attacks slow, so add a slow effect to hers
                         if(t.name.equals("Ashe")) p.hasSlow=true;
+                        //push to projectile list
                         activeProjectiles.add(p);
+                        //set the last attack time to this frame
                         t.timeLastAttacked=currentFrame;
                         break;
                     }
@@ -267,11 +292,16 @@ public class GameEngine {
         // projectile movement & collision detection
         {
             ListIterator<Projectile> i = activeProjectiles.listIterator();
+            //iterate through list  of projectiles
             while (i.hasNext()) {
                 Projectile p = i.next();
+                //move by the amount calculated 
                 p.move(lag);
 
+                //if the projectile is an automatically aimed attack, it will be always moving towards the enemy
+                //also, autos cannot be blocked by other enemies, so only have to check for collision with intended enemy
                 if (p.isAuto()) {
+                    //detects if projectile is touching enemy
                     if (rectangleCollision(p.getAbsPosX(), p.getAbsPosY(), p.getProjSizeX(), p.getProjSizeY(), p.target.absPosX, p.target.absPosY, p.target.sizeX, p.target.sizeY)) {
                         p.target.health -= p.tower.currentAttackDamage - p.target.armor;
                         if(p.hasSlow){
@@ -281,10 +311,14 @@ public class GameEngine {
                         i.remove();
                     }
                 }else{
+                    //if not automatically aimed, it can hit anyone
+                    //therefore have to iterate through all enemies
+                    //making sure a given projectile can only hit an enemy once
                     ArrayList<Enemy> hittableEnemies = new ArrayList<>(shownEnemies);
                     ListIterator<Enemy> j=hittableEnemies.listIterator();
                     while(j.hasNext()){
                         Enemy e=j.next();
+                        //if its touching an enemy, damage it
                         if (rectangleCollision(p.getAbsPosX(), p.getAbsPosY(), p.getProjSizeX(), p.getProjSizeY(), e.absPosX, e.absPosY, e.sizeX, e.sizeY)) {
                             if(p.ability.magicDamage){
                                 e.health-=(((p.tower.currentAttackDamage*p.ability.scalingAD)+(p.tower.currentAbilityPower*p.ability.scalingAP))*(e.magicResist/100));
@@ -293,7 +327,9 @@ public class GameEngine {
                             }
                             tempEvents.add(new TemporaryEvent(e,p.ability));
                             j.remove();
+                            //some projectiles can only pierce a limited number of enemies
                             p.ability.pierce--;
+                            //if no more pierce, remove projectile
                             if(p.ability.pierce<=0) {
                                 i.remove();
                                 break;
@@ -308,11 +344,15 @@ public class GameEngine {
         {
             ListIterator<Enemy> i = shownEnemies.listIterator();
             while (i.hasNext()) {
+                //loop through enemies
                 Enemy e=i.next();
+                //if enemys health is below 0
                 if(e.health<=0){
                     for(Tower t:placedTowers){
+                        //give xp to all towers in a radius
                         Line l=new Line(new Pair<>(e.posX,e.posY),new Pair<>(e.posX,e.posY));
                         if(l.getDistance()<=500) t.xp+=10;
+                        //if enough xp is acquired, level up
                         if(t.xp>=100&&t.level<5) {
                             t.levelUp();
                         }
@@ -372,6 +412,9 @@ public class GameEngine {
     Return: none
      */
     public void drawGameLayout(Menu menu, Graphics g) {
+        //just draws the images at the correct locations
+        //self explanatory
+        //this specific method draws the parts that always appear on screen (gold etc)
         Graphics2D g2d = (Graphics2D) g;
         FontMetrics metrics = g.getFontMetrics(gamerfont);
         g.setFont(gamerfont);
@@ -418,6 +461,7 @@ public class GameEngine {
     Return: none
      */
     public void drawGameLogic(Graphics g) {
+        //for all enemies, towers, projectiles, draw them
         for (Enemy e : this.shownEnemies) {
             g.drawImage(e.image, e.posX-e.sizeX, e.posY-e.sizeY, null);
         }
@@ -435,6 +479,8 @@ public class GameEngine {
     Return: none
      */
     public void drawSelectedTower(Menu menu, Graphics g) {
+        //if a tower is being selected, display additional info about it
+        //the actual methods are self explanatory
         g.setColor(new Color(153, 204, 255,127));
         g.fillOval(selectedTower.posX-selectedTower.range,selectedTower.posY-selectedTower.range,selectedTower.range*2,selectedTower.range*2);
 
@@ -474,6 +520,8 @@ public class GameEngine {
     }
 
     public void drawHoveredTower(Graphics g){
+        //if a tower is being placed down, draw its range around it
+        //if theres not enough gold to afford, make circle red
         g.drawImage(hoveredTower.image,mouseX-hoveredTower.sizeX,mouseY-hoveredTower.sizeY,null);
         if(gold>=hoveredTower.gold) g.setColor(new Color(0,0,0,127));
         else g.setColor(new Color(255,0,0,127));
@@ -481,6 +529,7 @@ public class GameEngine {
     }
 
     public void drawAbilityTarget(Graphics g){
+        //draw white circle around tower to denote that its targeting an ability
         g.setColor(new Color(255, 255, 255));
         g.drawOval(selectedTower.posX-selectedAbility.range, selectedTower.posY-selectedAbility.range, selectedAbility.range*2, selectedAbility.range*2);
     }
@@ -512,6 +561,7 @@ public class GameEngine {
         return x > left && x < right && y > up && y < down;
     }
 
+    //method used to easily check whether a mouseclick is inside a rectangular area
     private boolean inRectangle(MouseEvent e, int left, int right, int up, int down) {
         return e.getX() > left && e.getX() < right && e.getY() > up && e.getY() < down;
     }
@@ -530,20 +580,27 @@ public class GameEngine {
 
     }
 
+    //mousepressed is used for most listeners to avoid issues where mouse moves slightly during click, making it not considered a click, but rather a drag
     public void mousePressed(MouseEvent e) {
+        //start wave button
         if (inRectangle(e, 384, 512, 600, 720) && wavePaused) {
             startWave();
         }else if(inRectangle(e, 0, 10, 700, 720)){
+            //secret debug button to gain gold
             gold+=100;
         }
         else if(inRectangle(e, 896, 896+128*3, 500, 600)&&selectedTower!=null&&selectedTower.towerAbilities.get(0).getCurrentCooldown()==0){
+            //activate ability, enter targeting mode
             selectedAbility=selectedTower.towerAbilities.get(0);
             targetingAbility=true;
         }else if(inRectangle(e, 0, 1280, 0, 600)&&targetingAbility){
+            //after targeting ability
             if(selectedAbility.name!="Whimsy"){
+                //if its a location based ability, just cast
                 selectedAbility.use(e.getX(),e.getY(),this);
             }
             else{
+                //if its a tower based ability, loop through all towers to see if its a valid cast
                 Double d=Double.MAX_VALUE;
                 affectedTower=null;
                 for(Tower t:placedTowers){
@@ -560,6 +617,7 @@ public class GameEngine {
             }
             targetingAbility=false;
         }
+        //select a tower that has been placed
         else if(inRectangle(e, 0, 1280, 0, 600)){
             Double d=Double.MAX_VALUE;
             selectedTower=null;
@@ -571,6 +629,7 @@ public class GameEngine {
                 }
             }
         }
+        //select a tower to place down
         else if(inRectangle(e,256*2,256*2+128,600,720)){
             placingTower=true;
             hoveredTower=new Ashe(0,0);
@@ -593,6 +652,8 @@ public class GameEngine {
     }
 
     public void mouseReleased(MouseEvent e) {
+        //letting go of mouse is only used for placing tower
+        //depending on what the hovered tower was, it places it down
         if(placingTower){
             if(inRectangle(e, 0, 1280, 0, 600)){
                 if(hoveredTower.name.equals("Ashe")&&gold>=hoveredTower.gold) {

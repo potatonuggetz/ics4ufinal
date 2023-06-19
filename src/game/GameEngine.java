@@ -100,10 +100,10 @@ public class GameEngine {
           
              
 
-           deathAnimations = new Image[44];
-           for (int i = 0; i < 44; i++) {
-               deathAnimations[i] = ImageIO.read(new File("img/ui/boom/death" + (i+1) + ".png"));
-           }
+            deathAnimations = new Image[44];
+            for (int i = 0; i < 44; i++) {
+                deathAnimations[i] = ImageIO.read(new File("img/ui/boom/death" + (i+1) + ".png"));
+            }
              
         } catch (IOException e) {
 

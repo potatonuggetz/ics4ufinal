@@ -16,6 +16,9 @@ public class Ashe extends Tower{
         attackSpeed=new double[]{0,0.6,0.8,1.3,1.9,3};
         projectileSpeed=125;
         range=150;
+        currentAttackDamage=attackDamage[level];
+        currentAbilityPower=abilityPower[level];
+        currentAttackSpeed=attackSpeed[level];
         sizeX=44;
         sizeY=50;
         towerAbilities.add(new AsheW(this));

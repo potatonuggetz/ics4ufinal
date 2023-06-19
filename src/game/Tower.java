@@ -6,7 +6,7 @@ abstract public class Tower {
     // info
     protected String name;
     protected String description;
-    protected int level; //level of the tower, increases with respect to time, maxes at 5
+    protected int level=1; //level of the tower, increases with respect to time, maxes at 5
     protected int xp; //xp, used to calculate level
 
     // attack
@@ -43,6 +43,17 @@ abstract public class Tower {
         posX=x;
         posY=y;
         towerList.add(this);
+    }
+
+    public void levelUp(){
+        xp-=100;
+        if(level<5) level++;
+        if(currentAttackDamage==attackDamage[level-1]) currentAttackDamage=attackDamage[level];
+        else currentAttackDamage=(currentAttackDamage/attackDamage[level-1])*attackDamage[level];
+        if(currentAbilityPower==abilityPower[level-1]) currentAbilityPower=abilityPower[level];
+        else currentAbilityPower=(currentAbilityPower/abilityPower[level-1])*abilityPower[level];
+        if(currentAttackSpeed==attackSpeed[level-1]) currentAttackSpeed=attackSpeed[level];
+        else currentAttackSpeed=(currentAttackSpeed/attackSpeed[level-1])*attackSpeed[level];
     }
 
     public String getName(){

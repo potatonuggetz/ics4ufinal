@@ -226,7 +226,9 @@ public class GameEngine {
 
         // towers attack
         for (Tower t : this.placedTowers) {
+            System.out.println("vobe");
             if(t.getCurrentAttackCooldown()==0){
+                System.out.println("POGOGG");
                 if(t.targeting==Tower.TARGETING_FIRST) Collections.sort(shownEnemies);
                 else if(t.targeting==Tower.TARGETING_LAST) Collections.sort(shownEnemies,new SortEnemyLast());
                 else if(t.targeting==Tower.TARGETING_STRONG) Collections.sort(shownEnemies,new SortEnemyStrong());
@@ -290,10 +292,10 @@ public class GameEngine {
                         Line l=new Line(new Pair<>(e.posX,e.posY),new Pair<>(e.posX,e.posY));
                         if(l.getDistance()<=250) t.xp+=10;
                         if(t.xp>=100&&t.level<5) {
-                            t.xp=0;
-                            t.level++;
+                            t.levelUp();
                         }
                     }
+                    i.remove();
                 }
             }
         }
@@ -393,12 +395,8 @@ public class GameEngine {
 
     public void drawHoveredTower(Graphics g){
         g.drawImage(hoveredTower.image,mouseX-hoveredTower.sizeX,mouseY-hoveredTower.sizeY,null);
-        /*if(hoveredTower.name.equals("Ashe")) g.drawImage(ashe,myGetMousePosition().x-Ashe.getSizeX(),myGetMousePosition().y-Ashe.get,null);
-        if(hoveredTower.equals("Caitlyn")) g.drawImage(caitlyn,myGetMousePosition().x,myGetMousePosition().y,null);
-        if(hoveredTower.equals("Ezreal")) g.drawImage(ezreal,myGetMousePosition().x,myGetMousePosition().y,null);
-        if(hoveredTower.equals("Lulu")) g.drawImage(lulu,myGetMousePosition().x,myGetMousePosition().y,null);
-        if(hoveredTower.equals("Veigar")) g.drawImage(veigar,myGetMousePosition().x,myGetMousePosition().y,null);
-        if(hoveredTower.equals("Vex")) g.drawImage(vex,myGetMousePosition().x,myGetMousePosition().y,null);*/
+        g.setColor(new Color(0,0,0,127));
+        g.fillOval(mouseX-hoveredTower.range,mouseY-hoveredTower.range,hoveredTower.range*2,hoveredTower.range*2);
     }
 
     // cycle through death animation
@@ -465,15 +463,16 @@ public class GameEngine {
     }
 
     public void mouseReleased(MouseEvent e) {
-        if(placingTower&&inRectangle(e, 0, 1280, 0, 600)){
-            if(hoveredTower.name.equals("Ashe")) placedTowers.add(new Ashe(e.getX(),e.getY()));
-            if(hoveredTower.name.equals("Caitlyn")) placedTowers.add(new Caitlyn(e.getX(),e.getY()));
-            if(hoveredTower.name.equals("Ezreal")) placedTowers.add(new Ezreal(e.getX(),e.getY()));
-            if(hoveredTower.name.equals("Lulu")) placedTowers.add(new Lulu(e.getX(),e.getY()));
-            if(hoveredTower.name.equals("Veigar")) placedTowers.add(new Veigar(e.getX(),e.getY()));
-            if(hoveredTower.name.equals("Vex")) placedTowers.add(new Vex(e.getX(),e.getY()));
+        if(placingTower){
+            if(inRectangle(e, 0, 1280, 0, 600)){
+                if(hoveredTower.name.equals("Ashe")) placedTowers.add(new Ashe(e.getX(),e.getY()));
+                if(hoveredTower.name.equals("Caitlyn")) placedTowers.add(new Caitlyn(e.getX(),e.getY()));
+                if(hoveredTower.name.equals("Ezreal")) placedTowers.add(new Ezreal(e.getX(),e.getY()));
+                if(hoveredTower.name.equals("Lulu")) placedTowers.add(new Lulu(e.getX(),e.getY()));
+                if(hoveredTower.name.equals("Veigar")) placedTowers.add(new Veigar(e.getX(),e.getY()));
+                if(hoveredTower.name.equals("Vex")) placedTowers.add(new Vex(e.getX(),e.getY()));
+            }
             placingTower=false;
-            System.out.println(""+e.getX()+" "+e.getY());
         }
     }
 

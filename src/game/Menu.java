@@ -163,6 +163,7 @@ public class Menu extends JPanel implements MouseListener, MouseMotionListener, 
         Graphics2D g2d = (Graphics2D) g;
         g.drawImage(inImages.get("bg"), 0, 0, null);
         g.drawImage(inImages.get("logo"), 316, 30, null);
+        
 
         drawButton(g2d, inImages.get("backbutton"), inImages.get("backbuttonhover"), 15, 15, 90, 90);
     }
@@ -176,6 +177,11 @@ public class Menu extends JPanel implements MouseListener, MouseMotionListener, 
 
         g.setColor(new Color(0, 0, 0, 127));
         g.fillRect(50, 300, 1180, 370);
+
+        g.setColor(new Color(255, 255, 255));
+        g.setFont(new Font("Calibri",1,32));
+        g.drawString("Tower defense game made by Jayden and Brendan",75,400);
+        g.drawString("Characters taken from League of Legends and Bocchi the Rock",75,500);
     }
 
     protected boolean drawButton(Graphics2D g, Image img, Image imghover, int posX, int posY, int width, int height) {

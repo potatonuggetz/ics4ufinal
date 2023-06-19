@@ -22,6 +22,7 @@ public class Lulu extends Tower{
         sizeX=31;
         sizeY=50;
         gold=200;
+        targeting=TARGETING_LAST;
         towerAbilities.add(new LuluW(this));
         try {
             this.image = ImageIO.read(new File("img/tower/lulu.png"));

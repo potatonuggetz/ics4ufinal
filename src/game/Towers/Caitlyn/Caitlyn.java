@@ -24,6 +24,7 @@ public class Caitlyn extends Tower{
         sizeX=41;
         sizeY=50;
         gold=100;
+        targeting=TARGETING_STRONG;
         towerAbilities.add(new CaitlynQ(this));
         try {
             this.image = ImageIO.read(new File("img/tower/caitlyn.png"));

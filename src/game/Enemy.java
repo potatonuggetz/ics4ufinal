@@ -27,8 +27,6 @@ abstract public class Enemy implements Comparable<Enemy>{
     protected int leg;
     protected int distanceFromEnd;
 
-    //TODO: crowd control
-
     public Enemy(int spawnTime, int path, int startX, int startY){
         this.spawnTime = spawnTime;
         this.path = path;

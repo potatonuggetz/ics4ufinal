@@ -34,6 +34,7 @@ public class GameEngine {
     private static int currentFrame = 0;
     long startTime;
     long nextEnemyTime;
+    private boolean gamePaused;
 
     int gold;
     int health;
@@ -51,6 +52,7 @@ public class GameEngine {
     Image goldDisplay, hpDisplay, waveStart, waveProgress, waveStartHover;
     Image waveIcon, heartIcon, goldIcon;
     Image[] deathAnimations;
+    Image backbutton, backbuttonhover, quitbutton, quitbuttonhover;
 
     public GameEngine(Level level) {
         this.level = level;
@@ -58,6 +60,7 @@ public class GameEngine {
         wave = 0;
         health = 15;
         gold = 100;
+        gamePaused = false;
 
         // initialize a bunch of stuff
         placedTowers = new ArrayList<>();
@@ -90,12 +93,18 @@ public class GameEngine {
             lulu = ImageIO.read(new File("img/tower/lulu.png"));
             veigar = ImageIO.read(new File("img/tower/veigar.png"));
             vex = ImageIO.read(new File("img/tower/vex.png"));
-           
+            backbutton = ImageIO.read(new File("img/ui/game_menu_backbutton.png"));
+            backbuttonhover = ImageIO.read(new File("img/ui/game_menu_backbuttonhover.png"));
+            quitbutton = ImageIO.read(new File("img/ui/game_menu_quitbutton.png"));
+            quitbuttonhover = ImageIO.read(new File("img/ui/game_menu_quitbuttonhover.png"));
+          
+             
 
-           deathAnimations = new Image[20];
-           for (int i = 0; i < 20; i++) {
-               deathAnimations[i] = ImageIO.read(new File("img/ui/boom/death" + i + ".png"));
+           deathAnimations = new Image[44];
+           for (int i = 0; i < 44; i++) {
+               deathAnimations[i] = ImageIO.read(new File("img/ui/boom/death" + (i+1) + ".png"));
            }
+             
         } catch (IOException e) {
 
         }
@@ -117,6 +126,8 @@ public class GameEngine {
     Return: none
      */
     public void update(long lg) {
+        if (gamePaused) return;
+
         currentFrame++;
 
         // for first time run
@@ -199,10 +210,6 @@ public class GameEngine {
 
                     if (e.leg >= this.level.paths.get(e.path).size()) {
                         health--;
-                        e.posX = leg.getEnd().first;
-                        e.posY = leg.getEnd().second;
-                        e.deathAnimationCount = 0;
-                        //dyingEnemies.add(e);
                         i.remove();
                         continue;
                     }
@@ -293,6 +300,10 @@ public class GameEngine {
                             t.levelUp();
                         }
                     }
+
+
+                    dyingEnemies.add(e);
+
                     i.remove();
                 }
             }
@@ -317,6 +328,7 @@ public class GameEngine {
     Return: none
      */
     public void draw(Menu menu, Graphics g) {
+        Graphics2D g2d = (Graphics2D) g;
         g.drawImage(this.level.background, 0, 0, null);
         drawGameLogic(g);
         drawGameLayout(menu, g);
@@ -324,7 +336,15 @@ public class GameEngine {
         if (selectedTower != null) {
             drawSelectedTower(g);
         }
-        drawEnemyDeath(g);
+        if (!gamePaused) drawEnemyDeath(g);
+
+        if (gamePaused) {
+            g.setColor(new Color(255, 255, 255, 127));
+            g.fillRect(0, 0, 1280, 720);
+
+            menu.drawButton(g2d, backbutton, backbuttonhover, 240, 210, 300, 300);
+            menu.drawButton(g2d, quitbutton, quitbuttonhover, 740, 210, 300, 300);
+        }
     }
 
     /*
@@ -403,12 +423,19 @@ public class GameEngine {
         ListIterator<Enemy> i = dyingEnemies.listIterator();
         while (i.hasNext()) {
             Enemy e = i.next();
-            if (e.deathAnimationCount > 20) {
+            if (e.deathAnimationCount > 44) {
                 i.remove();
             }
+            AlphaComposite ac = AlphaComposite.getInstance(AlphaComposite.SRC_OVER,(float)((44.0 - e.deathAnimationCount) / 44.0));
+            g.drawImage(e.image, e.posX-e.sizeX, e.posY-e.sizeY, null);
+            ac = AlphaComposite.getInstance(AlphaComposite.SRC_OVER,1);
             g.drawImage(deathAnimations[e.deathAnimationCount], e.posX-e.sizeX, e.posY-e.sizeY, null);
             e.deathAnimationCount++;
         }
+    }
+
+    public void pause() {
+        gamePaused = !gamePaused;
     }
 
     private Point myGetMousePosition() {
@@ -434,7 +461,7 @@ public class GameEngine {
     }
 
     public void mouseClicked(MouseEvent e) {
-        
+
     }
 
     public void mousePressed(MouseEvent e) {
@@ -493,6 +520,10 @@ public class GameEngine {
 
     public static double getFPS(){
         return FPS;
+    }
+
+    public boolean isGamePaused() {
+        return gamePaused;
     }
 
     public ArrayList<Tower> getPlacedTowers(){
